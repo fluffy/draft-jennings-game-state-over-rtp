@@ -62,7 +62,7 @@ packet so that they are guaranteed to be fate shared and either atomically
 delivered at the same time or not delivered at all to the receiver.
 
 The objects are defined as a series of primitives that define common
-types. The objects and updates to state are encoded with Tag Length
+<types. The objects and updates to state are encoded with Tag Length
 Value (TLV) style encoding so that receivers can skip objects they do
 not understand. The Objects in an single RTP packet MUST be processed in
 order. This allows a sender to write state in an old and new format at
@@ -100,15 +100,17 @@ Loc2 has a location as well as the rate of change per second.
 
 ```
 Norm1 := nx,ny,nz:Float16;
-``
+```
+
 Normal vector for a point. 
 
 ## TextureUV
 
 ```
 TextureUV1 := u,v:VarInt;
-``
-Normal vector for a point.
+```
+
+Location in texture map for a point.
 
 ## Rotation
 
@@ -174,7 +176,7 @@ Head1 := head1:Tag,  len:VarInt, objectID:VarInt,   time:Time1,
    loc:Loc2, rot:Rot2, [ headIPD1:Tag, ipd:Float16 ]
 ```
 
-Defines location and rotate of head with options inter pupil distance. 
+Defines location and rotate of head with optional inter-pupil distance. 
 
 ### Mesh 
 
@@ -256,12 +258,19 @@ UInt8, Int8, UInt16, Int16, UInt32, Int32, UInt16, Int64 encoded as
 1,2,4, or 8 bytes.
 
 VarInt are encoded as:
+
 * Top bits of first byte is 0, then  7 bit signed integer (-64 to 63)
+
 * Top bits of first byte is 10, then  6+8 bit signed integer  ( -8192 to 8191 ) 
+
 * Top bits of first byte is 110, then  5+16 bit signed integer ( 1,048,576 to 1,048,575 ) 
+
 * Top bits of first byte is 1110,0000 then next 4 bytes 32 bit integer 
+
 * Top bits of first byte is 1110,0001 then next 4 bytes 32 bit signed integer 
+
 * Top bits of first byte is 1110,0010 then next 8 bytes 64 bit integer 
+
 * Top bits of first byte is 1110,0011 then next 8 bytes 64 bit signed integer 
 
 
@@ -303,10 +312,15 @@ specification. Values 63-8191 are assigned by expert review. Values 8192
 to 1,048,575 are FCFS.
 
 Initial assignments are:
+
 * head1: 1
+
 * hand1: 2 
+
 * mesh1: 64
+
 * hand2: 65
+
 * headIPD1: 66
 
 # Security
