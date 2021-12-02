@@ -37,7 +37,7 @@ application to define objects with state, and the current values of that
 state over RTP.
 
 The conceptual model is each RTP sender has a small number of objects
-with state that need to be synchronized ot the other side. The current
+with state that need to be synchronized to the other side. The current
 values are periodically sent over RTP.  The MAY be sent when the values
 change but they MUST also be periodically sent so that any lost updates
 are send again and the state is eventually consistent.
@@ -57,13 +57,13 @@ points up and X points to the right.
 Applications can define there own objects or use some of the predefined
 common objects. Each object is identified by a type and identifier number
 to uniquely identify the object within the scope of that senders RTP
-stream. Multipel updates and objects can be combined in a single RTP
+stream. Multiple updates and objects can be combined in a single RTP
 packet so that they are guaranteed to be fate shared and either atomically
 delivered at the same time or not delivered at all to the receiver.
 
 The objects are defined as a series of primitives that define common
 types. The objects and updates to state are encoded with Tag Length
-Value (TLV) style encoding so that receivers cna skip objects they do
+Value (TLV) style encoding so that receivers can skip objects they do
 not understand. The Objects in an single RTP packet MUST be processed in
 order. This allows a sender to write state in an old and new format at
 the new format to override values in the old format in a single RTP
@@ -160,7 +160,7 @@ Bottom 16 bits of NTP time in ms since unix epoch;
 
 # Objects
 
-All objects must start with a tag a VarInt length then VarInt objectID.
+All objects must start with a tag a VarInt length, then a VarInt objectID.
 Applications can reserver tags for their objects in the registry defined
 in the IANA section.
 
@@ -194,8 +194,8 @@ size as the vertex and define the normal for each vertex. The uv array
 must be empty or same size as vertex array and have the u,v coordinate
 in the texture map for the vertex.
 
-The triangles array can be of a different size fro the Vertexs array.
-Each entry defines one triangle in the mest and contains the index of
+The triangles array can be of a different size from the vertex array.
+Each entry defines one triangle in the mesh and contains the index of
 the three vertex in the vertexes array. Vertexes MUST be in counter
 clockwise order.
 
@@ -222,7 +222,7 @@ Hand2 := hand2:Tag,  len: int16, objectID:VarInt,  time:time1,
   wrist: Transform1
   ```
 
-Hand2 represes a wired skeletal hand. Names of the joints are explained
+Hand2 represents a wired skeletal hand. Names of the joints are explained
 at [https://en.wikipedia.org/wiki/Interphalangeal_joints_of_the_hand]
 
 This is about 175 bytes @ 5Hz = 7 kbps 
@@ -279,7 +279,7 @@ by the binary data.
 
 Variable length arrays are encoded with the number of elements in the
 array encoded as a VarInt followed by the values in the array. Fixed
-length array do not have the number of elements at start of encoding.
+length array do not have the number of elements at the start of the encoding.
 
 
 # IANA
