@@ -81,25 +81,39 @@ representing state with backwards compatibility.
 
 # Primitives
 
-This section defined so primitives that are useful in defining objects.
+This section defined so primitives that are useful in defining
+objects. The definition are in W3C style EBNF [https://www.w3.org/TR/2010/REC-xquery-20101214/#EBNFNotation].
 
 ## Location
 
 ```
-Loc1 := x,y,z:Float32;
+Loc1 ::=
+ Float32 /* x */
+ Float32 /* y */
+ Float32 /* z */
 ```
 
-Loc1 is simply a 3D location of a point stored in Float 32;
+Loc1 is simply a 3D location of a point stored in Float32;
 
 ```
-Loc2 := x,y,z:Float32; vx,vy,vz:Float16;
+Loc2 ::=
+ Float32 /* x */
+ Float32 /* y */
+ Float32 /* z */
+ Float16 /* vx */
+ Float16 /* vy */
+ Float16 /* vz */
 ```
-Loc2 has a location as well as the rate of change per second.
+Loc2 has a location as Float32 followed by the rate of change in
+location per second as Float16.
 
 ## Normal
 
 ```
-Norm1 := nx,ny,nz:Float16;
+Norm1 ::=
+ Float16 /* nx */
+ Float16 /* ny */
+ Float16 /* nz */
 ```
 
 Normal vector for a point. 
@@ -107,7 +121,9 @@ Normal vector for a point.
 ## TextureUV
 
 ```
-TextureUV1 := u,v:VarInt;
+TextureUV1 ::=
+ VarUInt /* u */
+ VarUInt /* v */
 ```
 
 Location in texture map for a point.
@@ -115,24 +131,47 @@ Location in texture map for a point.
 ## Rotation
 
 ```
-Rot1 := i,j,k:Float16;
-```
+Rot1 ::=
+ Float16 /* i */
+ Float16 /* j */
+ Float16 /* k */
+ ```
 
-The non real parts of a normalized rotation quaternion.
+The non real parts of a normalized rotation quaternion. The real part can be computed based on it is normalized. 
 
 ```
-Rot2 := s:Rot1, e:Rot1;
+Rot2 ::=
+ Float16 /* s.i */
+ Float16 /* s.j */
+ Float16 /* s.k */
+ Float16 /* e.i */
+ Float16 /* e.j */
+ Float16 /* e.k */
 ```
 
 Rot2 defines the s, the current rotation, and e, an estimated value of
-the rotation in one second. This allows the receiver to use an algorithm
-such as SLERP to estimate the current rotation.
+the rotation in one second. The rotation e is chosen such that rotation
+of the object will follow a rotation along the great circle path from s
+to e with an constant angular rotation rate such that it would reach e
+in 1 second.
+
+This representation of rate of change of the rotation allows the
+receiver to use an algorithm such as SLERP
+[https://en.wikipedia.org/wiki/Slerp] to estimate the current rotation
+for the object for short periods of time into the future. The
+representation can not represent something that is rotating faster than
+one revolution ever 2 seconds.
+
+Open Issue: Would there be a better way to represent angular velocity.
 
 
 ## Child Transform
 
 ```
-Transform1 := tx,ty,tz:Float16;
+Transform1 ::=
+ Float16 /* tx */ 
+ Float16 /* ty */ 
+ Float16 /* tz */
 ```
 
 Defines a linear translation of a child object from a base object.
@@ -140,7 +179,7 @@ Defines a linear translation of a child object from a base object.
 ## Texture
 
 ```
-TextureUrl1 := String;
+TextureUrl1 ::= String
 ```
 
 URL of image with texture map. JPEG SHOULD be supported.
@@ -148,23 +187,49 @@ URL of image with texture map. JPEG SHOULD be supported.
 
 ## Texture Stream
 
+In some cases it is desirable to provide a separate RTP video stream
+which and have the texture used be the frame from the video
+stream with the corresponding time to the game object that uses the
+texture map. To do this there needs to be a way to identity the other
+RTP video stream.  One way to do that is use the "Payload Type" value
+used for the RTP packets for that video stream.
+
+
 ```
-TextureUrl2 := pt: UInt8;
+TextureRtpPT1 ::= UInt8 /* pt */
 ```
 
-RTP "Payload Type" value of RTP video stream to use as a texture map.
+RTP "Payload Type" value of RTP video stream to use as a texture map. 
+
+Open Issue: Is there a better way to identity video stream ?
+
+
 
 ## Timestamp 
 
-Time1 := timeMs: Int16 ; 
+```
+Time1 ::= UInt16 /* time in ms */ 
+```
 
-Bottom 16 bits of NTP time in ms since unix epoch;
+
+Lower 16 bits of number of milliseconds since 00:00:00 UTC on 1 January
+1970 not counting leap seconds. The assumption is these timestamps are
+accurate to about the level of an NTP synchronized clock. In C++20 this
+can be found with:
+
+```
+duration_cast<milliseconds>(
+      system_clock::now().time_since_epoch()
+    ) % 65536
+```
 
 # Objects
 
-All objects must start with a tag a VarInt length, then a VarInt objectID.
+All objects must start with a unique tag that defined the object type,
+a VarUInt length, then a VarUInt objectID, followed by the data for
+object. 
 Applications can reserver tags for their objects in the registry defined
-in the IANA section.
+in the IANA section. Objects can be made extensible by adding 
 
 
 ## Common Objects
@@ -172,22 +237,34 @@ in the IANA section.
 ### Player Head
 
 ```
-Head1 := head1:Tag,  len:VarInt, objectID:VarInt,   time:Time1,
-   loc:Loc2, rot:Rot2, [ headIPD1:Tag, ipd:Float16 ]
+Head1 := head1:Tag,  len:VarUInt, objectID:VarUInt,   time:Time1,
+   loc:Loc2, rot:Rot2,  ( headIPD1:Tag,   len:VarUInt,  ipd:Float16 ) 
 ```
 
-Defines location and rotate of head with optional inter-pupil distance. 
+The head1:Tag is a the constant value defined fore head1 in the IANA
+section to indicate this object is of type Head1.
+
+Defines location and rotate of head with optional inter-pupil
+distance (IPD). If there is an optional IPD, it starts with a tag with
+constant value headIPD1 from the IANA section, follow by the length of
+data in this optional section then the IPD in meters. 
+
 
 ### Mesh 
 
-Object with the following 
+Object with the following variable length arrays:
+
 
 ```
-Mesh1 := mesh1:Tag,  len:VarInt, objectID:VarInt, 
-    vertexes: Loc1[], 
-    normals: Norm1[], 
-    uv:  TextureUV1, 
-    triangles: Int16[3][];
+Mesh1 ::= tagMesh1 Length ObjectID 
+ VarUInt /* num Vertexes */ 
+ Loc1+ /* vertexes */ 
+ VarUInt /* numNormals */ 
+ Norm1* /* normals */
+ VarUInt /*  numTextureCoord */
+ TextureUV1* /*  textureCoord */
+ VarUInt /* numTrianglesIndex */
+ VarUInt+ /* trianglesIndex */
 ```
 
 The vertex is an array of at least 3 locations that defines the vertex
@@ -201,52 +278,120 @@ Each entry defines one triangle in the mesh and contains the index of
 the three vertex in the vertexes array. Vertexes MUST be in counter
 clockwise order.
 
+An important limitation to note is that Objects can not span RTP packets
+so the Mesh needs to be small enough that it size is less that the
+MTU. A typical limit might be as low as 50 triangles. 
+
+Note: when the arrays are encoded, they include the length of the
+array and is defined in the encoding section.
 
 ### Player Hand
 
 ```
-Hand1 := hand1:Tag,  len: int16, objectID:VarInt,  time:Time1, left:Bool,
-   loc:Loc2, rot:Rot2
+Hand1 ::= tagHand1 Length ObjectID Time1
+ Boolean /* left */ 
+ Loc2 Rot2 
 ```
 
 The Hand1 identifiers a location and rotation of a hand. The left is
 true for the left hand false for a right hand.
 
 ```
-Hand2 := hand2:Tag,  len: int16, objectID:VarInt,  time:time1,
-  left:Bool,
-  loc:Loc2, rot:Rot2, 
-  pinkyTip, pinkyDistal, pinkyIntermediate, pinkyProximal,pinkinMetaCarpal:Transform1 
-  ringTip,ringDistal,ringIntermediate,ringProximal,ringMetacarpal:Transform1 
-  middleTip,middleDistal,middleIntermediate,middleProximal,middleMetacarpal:Transform1 
-  indexTip,indexDistal,indexIntermediate,indexProximal,indexMetacarpal:Transform1 
-  thumbTip,thumbDistal,thumbProximal,thumbMetacarpal:Transform1 
-  wrist: Transform1
-  ```
+Hand2 ::= tagHand2 Length ObjectID Time1
+ Boolean /* left */ 
+ Loc2 Rot2
+ Transform1 /* wrist */
+ Transform1 /* thumbTip */
+ Transform1 /* thumbIP */
+ Transform1 /* thumbMCP */
+ Transform1 /* thumbCMC */
+ Transform1 /* indexTip */
+ Transform1 /* indexDIP */
+ Transform1 /* indexPIP */
+ Transform1 /* indexMCP */
+ Transform1 /* indexCMC */
+ Transform1 /* middleTip */
+ Transform1 /* middleDIP */
+ Transform1 /* middlePIP */
+ Transform1 /* middleMCP */
+ Transform1 /* middleCMC */
+ Transform1 /* ringTip */
+ Transform1 /* ringDIP */
+ Transform1 /* ringPIP */
+ Transform1 /* ringMCP */
+ Transform1 /* ringCMC */
+ Transform1 /* pinkyTip */
+ Transform1 /* pinkyDIP */
+ Transform1 /* pinkyPIP */
+ Transform1 /* pinkyMCP */
+ Transform1 /* pinkyCMC */
+```
 
-Hand2 represents a wired skeletal hand. Names of the joints are explained
-at [https://en.wikipedia.org/wiki/Interphalangeal_joints_of_the_hand]
+Hand2 represents a wired skeletal hand. The boolean is true for the left
+hand. The location should represent the location of the palm and
+rotation is from palm facing the x axis.
 
-This is about 175 bytes @ 5Hz = 7 kbps 
+The transform points represent the relative location to the main joints
+in the and from the hand location. The location of wrist is first
+followed by finger joints. The fingers are ordered by thumb, index, middle,
+ring, then pinky..  The joints are ordered by tip of finger (TIP), distal
+interphalangeal joint (DIP), proximal interphalangeal joint (PIP),
+metacarpophalangeal joint (MCP), then carpometacarpal joint (CMC) . Note
+the thumb has no middle phalange so the PIP and DIP joint just become
+the Interphalangel joint (IP).
+
+Note: The Microsoft documention calls the MCP "knuckle" for the fingers
+and PIP "middle joint" and the CMC is called "Metacarpal" which is very
+confusing since this is not the metacarpophalangeal joint. The MCP for
+the thumb gets called "proximal" not knuckle and the IP is "middle".
+
+Names of the joints are explained in
+[https://en.wikipedia.org/wiki/Interphalangeal_joints_of_the_hand]
+
+This is about 175 bytes so at a 5Hz update rate will be around 10
+kbps. TODO Check. 
 
 
 
 # Encoding
 
+Each RTP payload will contain one more more objects. An object can not
+be split across two RTP packets. The gneral design is that if the
+decoder does has not been coded to understand a given object type, the
+decode can skip over the object to the next object but will not be able
+to provide any information and the internal format of the data.
+
+The objects are defined such that they allways start with a tag that
+indivates the type followed by a length of the object (so it can be
+skipped). Any optional or variable parts of the object also use tags so
+that the decoder can allwasy be implemented as a LL(1) parser. 
+
 In general, little endian encoding is used on the wire to reduce byte
-swaps on common hardware.
+swaps on the most common hardware.
+
+When encoding lengths, it represent the number of bytes following the
+length and does not include the size of the length or information before
+it.
 
 ## Tag
 
-Tag := VarInt;
-
-Constant values of tags can be found in the IANA section.
+Constant values of tags can be found in the IANA section. They are
+encoded as VarUInt. 
 
 
 ## Float
 
 Float16, Float32, and Float64 are encoded as IEEE 754 half, single, and
 double precisions respectively.
+
+The half precision are often usefull for things where only a few
+signficant digits are needed such as normals. The inernal representation
+of them will ofen be single percsions (4 bytes) in mermoyr but they can reduced to
+2 bytes when encoded on the wire.
+
+Note there is an example decode for a single precision float at
+[https://datatracker.ietf.org/doc/html/rfc7049#appendix-D] 
+
 
 ## Boolean
 
@@ -265,30 +410,37 @@ VarInt are encoded as:
 
 * Top bits of first byte is 110, then  5+16 bit signed integer ( 1,048,576 to 1,048,575 ) 
 
-* Top bits of first byte is 1110,0000 then next 4 bytes 32 bit integer 
-
 * Top bits of first byte is 1110,0001 then next 4 bytes 32 bit signed integer 
 
-* Top bits of first byte is 1110,0010 then next 8 bytes 64 bit integer 
+* Top bits of first byte is 1110,0010 then next 8 bytes 64 bit signed integer 
 
-* Top bits of first byte is 1110,0011 then next 8 bytes 64 bit signed integer 
+
+VarUInt are encoded as:
+
+* Top bits of first byte is 0, then  7 bit unsigned  integer 
+
+* Top bits of first byte is 10, then  6+8 bit unsigned integer 
+
+* Top bits of first byte is 110, then  5+16 bit unsigned integer 
+
+* Top bits of first byte is 1110,0001 then next 4 bytes 32 bit unsigned integer 
+
+* Top bits of first byte is 1110,0010 then next 8 bytes 64 bit unsigned integer 
+
+
+TODO: get clearer on byte order on wire
 
 
 ## String
 
-Strings are encoded as a VarInt length in bytes (not characters)
+Strings are encoded as a VarUInt length in bytes (not characters)
 followed by a UTF-8 version of the string.
 
 ## Blob 
 
-Blobs are encoded as a VarInt length in bytes followed
-by the binary data. 
+Blobs are encoded as a VarUInt length in bytes followed
+by the binary data that goes in the blob. 
 
-## Arrays 
-
-Variable length arrays are encoded with the number of elements in the
-array encoded as a VarInt followed by the values in the array. Fixed
-length array do not have the number of elements at the start of the encoding.
 
 
 # IANA
@@ -307,21 +459,25 @@ into one RTP payload.
 ## Game State Tag Registry
 
 The specification defines a new IANA registry for tag values. All values
-MUST be greater than zero. Values 1-63 are defined with a standards track
-specification. Values 63-8191 are assigned by expert review. Values 8192
-to 1,048,575 are FCFS.
+MUST be greater than zero.
+Values 1-127 are assigned by "IETF Review" as defined in [RFC8126], and
+should only be used when size is critical, the object is small, and will
+be used frequently.
+Values 127-16383 are assigned by "Specification Required" as defined in
+[RFC8126].
+Values 16384 to 2,097,151 are "First Come First Served" as defined in
+[RFC8126].
 
 Initial assignments are:
 
-* head1: 1
-
-* hand1: 2 
-
-* mesh1: 64
-
-* hand2: 65
-
-* headIPD1: 66
+| TagName | Value |
+|:--------|-------:|
+| tagInvalid |0 |
+| tagHead1 |  1 |
+| tagHand1 | 2 |
+| tagMesh1 | 128 |
+| tagHand2 | 129 |
+| tagHeadIPD1 | 130 |
 
 # Security
 
@@ -333,13 +489,47 @@ tracking a persons hand might identify that user.
 
 # Acknowledgments
 
-Thanks to ....
+Thanks to Paul Jones. 
 
 # Test Vectors
 
 ## Head Location
 
-Head Location type 1 with head at location 1.1,0.2,30, no rotation, an
-objectID of 4, a time of 5 ms and an IPD of 0.056.
+Head Location type 1 with head at location 1.1,0.2,30.0, no rotation (so
+quaternian 0,0,0,1) and not rotating, an
+objectID of 4, a time of 5 ms after epoch and an IPD of 0.056.
 
-TODO
+| Field    | Type | Value | Hex |
+|:------|--------:|----:|:-----|
+| head1   |  Tag        |  1      |  0x01      |
+| len        |  VarInt    |   27   |  0x1B       |
+| objID    |  VarInt     |  0      |  0x00      |
+| time      |  UInt16   |  5      |  0x0500   | 
+| loc.x     |  Float32  |  1.1   |  0x3F8CCCCD |
+| loc.y     |   Float32 |   0.2  |  0x3E4CCCCD |
+| loc.z     |   Float32 |   30.0 | 0x3E4CCCCD |
+| rot.s.i   |   Float16 |   0.0   | 0x0000   | 
+| rot.s.j   |   Float16 |   0.0   | 0x0000   | 
+| rot.s.k  |   Float16 |   0.0   | 0x0000   | 
+| rot.e.i   |   Float16 |   0.0   | 0x0000   | 
+| rot.e.j   |   Float16 |   0.0   | 0x0000   | 
+| rot.e.k  |   Float16 |   0.0   | 0x0000   | 
+
+
+
+# Encode API
+
+API that take a hihg level reprsentation of each object where types are
+all float or int and retunes memory buffer.
+
+
+# Decode API
+
+API that takes binary data and set up objects and updates the objects
+and returns object ids that were updated.
+
+For each object, an API to get the predicted values at a given time.
+
+
+
+# EBNF

@@ -1,0 +1,158 @@
+
+
+Head1 ::= tagHead1 Length ObjectID Time1 Loc2 Rot2 
+  ( tagHeadIpd Length Float16 /* IPD */ )?
+  
+
+Mesh1 ::= tagMesh1 Length ObjectID 
+ VarUInt /* num Vertexes */ 
+ Loc1+ /* vertexes */ 
+ VarUInt /* numNormals */ 
+ Norm1* /* normals */
+ VarUInt /*  numTextureCoord */
+ TextureUV1* /*  textureCoord */
+ VarUInt /* numTrianglesIndex */
+ VarUInt+ /* trianglesIndex */
+
+
+Hand1 ::= tagHand1 Length ObjectID Time1
+ Boolean /* left */ 
+ Loc2 Rot2 
+
+
+
+Hand2 ::= tagHand2 Length ObjectID Time1
+ Boolean /* left */ 
+ Loc2 Rot2
+ Transform1 /* wrist */
+ Transform1 /* thumbTip */
+ Transform1 /* thumbIP */
+ Transform1 /* thumbMCP */
+ Transform1 /* thumbCMC */
+ Transform1 /* indexTip */
+ Transform1 /* indexDIP */
+ Transform1 /* indexPIP */
+ Transform1 /* indexMCP */
+ Transform1 /* indexCMC */
+ Transform1 /* middleTip */
+ Transform1 /* middleDIP */
+ Transform1 /* middlePIP */
+ Transform1 /* middleMCP */
+ Transform1 /* middleCMC */
+ Transform1 /* ringTip */
+ Transform1 /* ringDIP */
+ Transform1 /* ringPIP */
+ Transform1 /* ringMCP */
+ Transform1 /* ringCMC */
+ Transform1 /* pinkyTip */
+ Transform1 /* pinkyDIP */
+ Transform1 /* pinkyPIP */
+ Transform1 /* pinkyMCP */
+ Transform1 /* pinkyCMC */
+
+
+
+Tag ::= VarUInt
+
+
+
+tagInvalid ::= #x00
+tagHead1 ::= #x01
+tagHand1 ::= #x02
+tagMesh1 ::= #x80 #x00
+tagHand2 ::= #x80 #x01
+tagHeadIpd ::= #x80 #x02
+
+
+ObjectID ::= VarUInt
+Lenght ::= VarUInt
+
+
+Loc1 ::=
+ Float32 /* x */
+ Float32 /* y */
+ Float32 /* z */
+
+Loc2 ::=
+ Float32 /* x */
+ Float32 /* y */
+ Float32 /* z */
+ Float16 /* vx */
+ Float16 /* vy */
+ Float16 /* vz */
+
+Norm1 ::=
+ Float16 /* x */
+ Float16 /* y */
+ Float16 /* z */
+
+TextureUV1 ::=
+ VarUInt /* u */
+ VarUInt /* v */
+
+
+Rot1 ::=
+ Float16 /* i */
+ Float16 /* j */
+ Float16 /* k */
+ /* w computed based on quaterniionquaternion is nomalized */
+
+
+Rot2 ::=
+ Float16 /* s.i */
+ Float16 /* s.j */
+ Float16 /* s.k */
+ Float16 /* e.i */
+ Float16 /* e.j */
+ Float16 /* e.k */
+
+Transform1 ::=
+ Float16 /* tx */ 
+ Float16 /* ty */ 
+ Float16 /* tz */ 
+
+TextureUrl1 ::= String
+
+TextureRtpPT1 ::= UInt8 /* pt */ 
+
+Time1 ::= UInt16 /* time in ms */ 
+
+
+Tag ::= VarUInt
+
+Boolean ::=  #x00 | #x01 
+
+String ::= VarUInt byte*
+
+Blob ::= VarUInt byte*
+
+Float16 ::= byte byte
+Float32 ::= byte byte byte byte
+Float64 ::= byte byte byte byte byte byte byte byte
+
+Int8 ::= byte
+Int16 ::= byte byte
+Int32 ::= byte byte byte byte
+Int64 ::= byte byte byte byte byte byte byte byte
+
+UInt8 ::= byte
+UInt16 ::= byte byte
+UInt32 ::= byte byte byte byte
+UInt64 ::= byte byte byte byte byte byte byte byte
+
+VarUInt ::=
+ ( [#x0-#x7F] ) |
+ ( [#x80-#x87] byte ) |
+ ( [#x88-#x8B] byte byte ) |
+ ( #xE1 UInt32 ) |
+ ( #xE2 UInt64 )
+
+VarInt ::=
+ ( [#x0-#x7F] ) |
+ ( [#x80-#x87] byte ) |
+ ( [#x88-#x8B] byte byte ) |
+ ( #xE1 Int32 ) |
+ ( #xE2 Int64 )  
+
+byte ::= [#x00-#xFF]
+

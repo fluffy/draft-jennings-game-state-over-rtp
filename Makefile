@@ -32,15 +32,15 @@ gen/draft-jennings-game-state-over-rtp.pdf: gen/draft-jennings-game-state-over-r
 gen/draft-jennings-game-state-over-rtp.html: gen/draft-jennings-game-state-over-rtp.xml
 	xml2rfc --html --v3 gen/draft-jennings-game-state-over-rtp.xml
 
-gen/quicr.pdf: abstract.md  quicr-spec.md contributors.md 
+gen/game.pdf: abstract.md  game-spec.md contributors.md 
 	mkdir -p gen 
-	pandoc -s title.md abstract.md  quicr-spec.md contributors.md -o gen/quicr.pdf
+	pandoc -s title.md abstract.md  game-spec.md contributors.md -o gen/game.pdf
 
 
-quicr-gramar.html: quicr.ebnf
+game-gramar.html: game.ebnf
 	mkdir -p gen 
-	java -jar lib/rr.war -png -noinline -color:#FFFFFF -out:gen/digram.zip quicr.ebnf
+	java -jar lib/rr.war -png -noinline -color:#FFFFFF -out:gen/digram.zip game.ebnf
 	unzip -o gen/digram.zip
-	mv index.html quicr-gramar.html
+	mv index.html game-gramar.html
 
 
