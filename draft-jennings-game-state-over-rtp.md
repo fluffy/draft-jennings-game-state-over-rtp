@@ -338,9 +338,9 @@ ring, then pinky..  The joints are ordered by tip of finger (TIP), distal
 interphalangeal joint (DIP), proximal interphalangeal joint (PIP),
 metacarpophalangeal joint (MCP), then carpometacarpal joint (CMC) . Note
 the thumb has no middle phalange so the PIP and DIP joint just become
-the Interphalangel joint (IP).
+the interphalangeal joint (IP).
 
-Note: The Microsoft documention calls the MCP "knuckle" for the fingers
+Note: The Microsoft documentation calls the MCP "knuckle" for the fingers
 and PIP "middle joint" and the CMC is called "Metacarpal" which is very
 confusing since this is not the metacarpophalangeal joint. The MCP for
 the thumb gets called "proximal" not knuckle and the IP is "middle".
@@ -356,15 +356,15 @@ kbps. TODO Check.
 # Encoding
 
 Each RTP payload will contain one more more objects. An object can not
-be split across two RTP packets. The gneral design is that if the
+be split across two RTP packets. The general design is that if the
 decoder does has not been coded to understand a given object type, the
 decode can skip over the object to the next object but will not be able
 to provide any information and the internal format of the data.
 
-The objects are defined such that they allways start with a tag that
-indivates the type followed by a length of the object (so it can be
+The objects are defined such that they always start with a tag that
+indicates the type followed by a length of the object (so it can be
 skipped). Any optional or variable parts of the object also use tags so
-that the decoder can allwasy be implemented as a LL(1) parser. 
+that the decoder can always be implemented as a LL(1) parser. 
 
 In general, little endian encoding is used on the wire to reduce byte
 swaps on the most common hardware.
@@ -384,9 +384,9 @@ encoded as VarUInt.
 Float16, Float32, and Float64 are encoded as IEEE 754 half, single, and
 double precisions respectively.
 
-The half precision are often usefull for things where only a few
-signficant digits are needed such as normals. The inernal representation
-of them will ofen be single percsions (4 bytes) in mermoyr but they can reduced to
+The half precision are often useful for things where only a few
+significant digits are needed such as normals. The internal representation
+of them will often be single precession (4 bytes) in memory but they can reduced to
 2 bytes when encoded on the wire.
 
 Note there is an example decode for a single precision float at
@@ -496,18 +496,21 @@ Thanks to Paul Jones.
 ## Head Location
 
 Head Location type 1 with head at location 1.1,0.2,30.0, no rotation (so
-quaternian 0,0,0,1) and not rotating, an
+quaternion 0,0,0,1) and not rotating, an
 objectID of 4, a time of 5 ms after epoch and an IPD of 0.056.
 
 | Field    | Type | Value | Hex |
 |:------|--------:|----:|:-----|
 | head1   |  Tag        |  1      |  0x01      |
-| len        |  VarInt    |   27   |  0x1B       |
+| len        |  VarInt    |   33   |  0x21       |
 | objID    |  VarInt     |  0      |  0x00      |
 | time      |  UInt16   |  5      |  0x0500   | 
 | loc.x     |  Float32  |  1.1   |  0x3F8CCCCD |
 | loc.y     |   Float32 |   0.2  |  0x3E4CCCCD |
 | loc.z     |   Float32 |   30.0 | 0x3E4CCCCD |
+| loc.vx   |  Float16  |   0.0  | 0x0000  |
+| loc.vy   |   Float16 |   0.0   |  0x0000  |
+| loc.vz   |   Float16 |   0.0   | 0x0000  |
 | rot.s.i   |   Float16 |   0.0   | 0x0000   | 
 | rot.s.j   |   Float16 |   0.0   | 0x0000   | 
 | rot.s.k  |   Float16 |   0.0   | 0x0000   | 
@@ -519,7 +522,7 @@ objectID of 4, a time of 5 ms after epoch and an IPD of 0.056.
 
 # Encode API
 
-API that take a hihg level reprsentation of each object where types are
+API that take a high level representation of each object where types are
 all float or int and retunes memory buffer.
 
 
@@ -533,3 +536,161 @@ For each object, an API to get the predicted values at a given time.
 
 
 # EBNF
+
+```
+Head1 ::= tagHead1 Length ObjectID Time1 Loc2 Rot2 
+  ( tagHeadIpd Length Float16 /* IPD */ )?
+  
+
+Mesh1 ::= tagMesh1 Length ObjectID 
+ VarUInt /* num Vertexes */ 
+ Loc1+ /* vertexes */ 
+ VarUInt /* numNormals */ 
+ Norm1* /* normals */
+ VarUInt /*  numTextureCoord */
+ TextureUV1* /*  textureCoord */
+ VarUInt /* numTrianglesIndex */
+ VarUInt+ /* trianglesIndex */
+
+
+Hand1 ::= tagHand1 Length ObjectID Time1
+ Boolean /* left */ 
+ Loc2 Rot2 
+
+
+
+Hand2 ::= tagHand2 Length ObjectID Time1
+ Boolean /* left */ 
+ Loc2 Rot2
+ Transform1 /* wrist */
+ Transform1 /* thumbTip */
+ Transform1 /* thumbIP */
+ Transform1 /* thumbMCP */
+ Transform1 /* thumbCMC */
+ Transform1 /* indexTip */
+ Transform1 /* indexDIP */
+ Transform1 /* indexPIP */
+ Transform1 /* indexMCP */
+ Transform1 /* indexCMC */
+ Transform1 /* middleTip */
+ Transform1 /* middleDIP */
+ Transform1 /* middlePIP */
+ Transform1 /* middleMCP */
+ Transform1 /* middleCMC */
+ Transform1 /* ringTip */
+ Transform1 /* ringDIP */
+ Transform1 /* ringPIP */
+ Transform1 /* ringMCP */
+ Transform1 /* ringCMC */
+ Transform1 /* pinkyTip */
+ Transform1 /* pinkyDIP */
+ Transform1 /* pinkyPIP */
+ Transform1 /* pinkyMCP */
+ Transform1 /* pinkyCMC */
+
+
+
+Tag ::= VarUInt
+
+
+
+tagInvalid ::= #x00
+tagHead1 ::= #x01
+tagHand1 ::= #x02
+tagMesh1 ::= #x80 #x00
+tagHand2 ::= #x80 #x01
+tagHeadIpd ::= #x80 #x02
+
+
+ObjectID ::= VarUInt
+Length ::= VarUInt
+
+
+Loc1 ::=
+ Float32 /* x */
+ Float32 /* y */
+ Float32 /* z */
+
+Loc2 ::=
+ Float32 /* x */
+ Float32 /* y */
+ Float32 /* z */
+ Float16 /* vx */
+ Float16 /* vy */
+ Float16 /* vz */
+
+Norm1 ::=
+ Float16 /* x */
+ Float16 /* y */
+ Float16 /* z */
+
+TextureUV1 ::=
+ VarUInt /* u */
+ VarUInt /* v */
+
+
+Rot1 ::=
+ Float16 /* i */
+ Float16 /* j */
+ Float16 /* k */
+ /* w computed based on quaternion is normalized */
+
+
+Rot2 ::=
+ Float16 /* s.i */
+ Float16 /* s.j */
+ Float16 /* s.k */
+ Float16 /* e.i */
+ Float16 /* e.j */
+ Float16 /* e.k */
+
+Transform1 ::=
+ Float16 /* tx */ 
+ Float16 /* ty */ 
+ Float16 /* tz */ 
+
+TextureUrl1 ::= String
+
+TextureRtpPT1 ::= UInt8 /* pt */ 
+
+Time1 ::= UInt16 /* time in ms */ 
+
+
+Tag ::= VarUInt
+
+Boolean ::=  #x00 | #x01 
+
+String ::= VarUInt byte*
+
+Blob ::= VarUInt byte*
+
+Float16 ::= byte byte
+Float32 ::= byte byte byte byte
+Float64 ::= byte byte byte byte byte byte byte byte
+
+Int8 ::= byte
+Int16 ::= byte byte
+Int32 ::= byte byte byte byte
+Int64 ::= byte byte byte byte byte byte byte byte
+
+UInt8 ::= byte
+UInt16 ::= byte byte
+UInt32 ::= byte byte byte byte
+UInt64 ::= byte byte byte byte byte byte byte byte
+
+VarUInt ::=
+ ( [#x0-#x7F] ) |
+ ( [#x80-#x87] byte ) |
+ ( [#x88-#x8B] byte byte ) |
+ ( #xE1 UInt32 ) |
+ ( #xE2 UInt64 )
+
+VarInt ::=
+ ( [#x0-#x7F] ) |
+ ( [#x80-#x87] byte ) |
+ ( [#x88-#x8B] byte byte ) |
+ ( #xE1 Int32 ) |
+ ( #xE2 Int64 )  
+
+byte ::= [#x00-#xFF]
+```

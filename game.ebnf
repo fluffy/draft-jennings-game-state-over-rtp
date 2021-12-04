@@ -1,9 +1,7 @@
 
-
 Head1 ::= tagHead1 Length ObjectID Time1 Loc2 Rot2 
   ( tagHeadIpd Length Float16 /* IPD */ )?
   
-
 Mesh1 ::= tagMesh1 Length ObjectID 
  VarUInt /* num Vertexes */ 
  Loc1+ /* vertexes */ 
@@ -14,12 +12,9 @@ Mesh1 ::= tagMesh1 Length ObjectID
  VarUInt /* numTrianglesIndex */
  VarUInt+ /* trianglesIndex */
 
-
 Hand1 ::= tagHand1 Length ObjectID Time1
  Boolean /* left */ 
  Loc2 Rot2 
-
-
 
 Hand2 ::= tagHand2 Length ObjectID Time1
  Boolean /* left */ 
@@ -54,8 +49,6 @@ Hand2 ::= tagHand2 Length ObjectID Time1
 
 Tag ::= VarUInt
 
-
-
 tagInvalid ::= #x00
 tagHead1 ::= #x01
 tagHand1 ::= #x02
@@ -63,10 +56,9 @@ tagMesh1 ::= #x80 #x00
 tagHand2 ::= #x80 #x01
 tagHeadIpd ::= #x80 #x02
 
-
 ObjectID ::= VarUInt
-Lenght ::= VarUInt
 
+Length ::= VarUInt
 
 Loc1 ::=
  Float32 /* x */
@@ -90,13 +82,11 @@ TextureUV1 ::=
  VarUInt /* u */
  VarUInt /* v */
 
-
 Rot1 ::=
  Float16 /* i */
  Float16 /* j */
  Float16 /* k */
- /* w computed based on quaterniionquaternion is nomalized */
-
+ /* w computed based on quaternion is nomalized */
 
 Rot2 ::=
  Float16 /* s.i */
@@ -116,7 +106,6 @@ TextureUrl1 ::= String
 TextureRtpPT1 ::= UInt8 /* pt */ 
 
 Time1 ::= UInt16 /* time in ms */ 
-
 
 Tag ::= VarUInt
 
