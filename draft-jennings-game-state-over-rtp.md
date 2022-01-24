@@ -508,7 +508,7 @@ objectID of 4, a time of 5 ms after epoch and an IPD of 0.056.
 | time      |  UInt16   |  5      |  0x0500   | 
 | loc.x     |  Float32  |  1.1   |  0x3F8CCCCD |
 | loc.y     |   Float32 |   0.2  |  0x3E4CCCCD |
-| loc.z     |   Float32 |   30.0 | 0x3E4CCCCD |
+| loc.z     |   Float32 |   30.0 | 0x41F00000 |
 | loc.vx   |  Float16  |   0.0  | 0x0000  |
 | loc.vy   |   Float16 |   0.0   |  0x0000  |
 | loc.vz   |   Float16 |   0.0   | 0x0000  |
