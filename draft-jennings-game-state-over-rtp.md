@@ -229,7 +229,8 @@ All objects must start with a unique tag that defined the object type,
 a VarUInt length, then a VarUInt objectID, followed by the data for
 object. 
 Applications can reserver tags for their objects in the registry defined
-in the IANA section. Objects can be made extensible by adding 
+in the IANA section. Objects can be made extensible by adding a section
+that contains optional tag, length, value tuples. 
 
 
 ## Common Objects
