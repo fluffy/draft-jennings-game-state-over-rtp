@@ -464,8 +464,8 @@ by the binary data that goes in the blob.
 # Full Intra Request
 
 RTP supports a Full Intra Request (FIR) Feedback Controll feedback
-messages. When an RTP sender receives a FIR, it SHOULD send a full copy
-of all the current game state.
+messages. When an RTP sender receives a FIR, it SHOULD send a copy
+of all the relevant game state.
 
 # IANA
 
