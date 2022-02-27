@@ -315,17 +315,14 @@ parameters change over time.
 ### Player Head
 
 ```
-Head1 := head1:Tag,  len:VarUInt, objectID:VarUInt,   time:Time1,
-   loc:Loc2, rot:Rot2,  ( headIPD1:Tag,   len:VarUInt,  ipd:Float16 ) 
+Head1 ::= tagHead1 Length ObjectID Time1
+  Loc2 Rot2 
+  ( tagHeadIpd Length Float16 /* IPD */ )?
 ```
 
-The head1:Tag is a the constant value defined fore head1 in the IANA
-section to indicate this object is of type Head1.
 
-Defines location and rotate of head with optional inter-pupil
-distance (IPD). If there is an optional IPD, it starts with a tag with
-constant value headIPD1 from the IANA section, follow by the length of
-data in this optional section then the IPD in meters. 
+Defines location and rotation of head with optional inter-pupil
+distance (IPD). 
 
 
 ### Mesh 
