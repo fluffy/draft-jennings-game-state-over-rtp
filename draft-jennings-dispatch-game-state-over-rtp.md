@@ -499,6 +499,8 @@ Initial assignments are:
 | tagInvalid |0 |
 | tagHead1 |  1 |
 | tagHand1 | 2 |
+| tagObject1 | 3 |
+| tagParent1 | 4 |
 | tagMesh1 | 128 |
 | tagHand2 | 129 |
 | tagHeadIPD1 | 130 |
