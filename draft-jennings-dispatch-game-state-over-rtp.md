@@ -320,7 +320,6 @@ Head1 ::= tagHead1 Length ObjectID Time1
   ( tagHeadIpd Length Float16 /* IPD */ )?
 ```
 
-
 Defines location and rotation of head with optional inter-pupil
 distance (IPD). 
 
