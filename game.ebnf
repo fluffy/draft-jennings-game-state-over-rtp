@@ -12,6 +12,12 @@ Mesh1 ::= tagMesh1 Length ObjectID
  VarUInt /* numTrianglesIndex */
  VarUInt+ /* trianglesIndex */
 
+Mesh2::= tagMesh2 Length ObjectID
+  Loc2 Rot2 Scale2
+  MeshUrl1
+  ( TextureUrl1 | TextureRtpPT1 )? /* Optiaonal Texture Map */
+  ( tagParent1 Length ObjectID )? /* Optional Parent */
+ 
 Object1 ::= tagObject1 Length ObjectID Time1
  Loc1
  Rot1
@@ -23,7 +29,6 @@ Object2 ::= tagObject2 Length ObjectID Time1
  Rot2
  Scale2
  ( tagParent1 Length ObjectID )? /* Optional Parent */
-
 
 Hand1 ::= tagHand1 Length ObjectID Time1
  Boolean /* left */ 
@@ -70,6 +75,7 @@ tagParent1 ::= #x04
 tagMesh1 ::= #x80 #x00
 tagHand2 ::= #x80 #x01
 tagHeadIpd ::= #x80 #x02
+tagMesh2 ::= #x80 #x04
 tagObject2 ::= #x80 #x03
 
 ObjectID ::= VarUInt
@@ -129,6 +135,8 @@ Transform1 ::=
  Float16 /* tz */ 
 
 TextureUrl1 ::= String
+
+MeshUrl1 ::= String
 
 TextureRtpPT1 ::= UInt8 /* pt */ 
 
