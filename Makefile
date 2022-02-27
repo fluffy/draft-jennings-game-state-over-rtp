@@ -6,7 +6,10 @@
 
 .PHONE: all clean lint format
 
-all: gen/draft-jennings-dispatch-game-state-over-rtp.txt game-gramar.html gen/draft-jennings-dispatch-game-state-over-rtp.pdf 
+all:  game-gramar.html \
+	gen/draft-jennings-dispatch-game-state-over-rtp.pdf \
+	gen/draft-jennings-dispatch-game-state-over-rtp.txt \
+	gen/draft-jennings-dispatch-game-state-over-rtp.html
 
 clean:
 	rm -rf gen/*
