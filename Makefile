@@ -14,11 +14,6 @@ clean:
 lint: gen/draft-jennings-game-state-over-rtp.xml
 	rfclint gen/draft-jennings-game-state-over-rtp.xml
 
-format:
-	mkdir -p gen
-	mmark -markdown draft-jennings-game-state-over-rtp..md >  gen/draft-jennings-game-state-over-rtp.md
-	echo updated MD is in gen/draft-jennings-game-state-over-rtp.md
-
 gen/draft-jennings-game-state-over-rtp.xml: draft-jennings-game-state-over-rtp.md
 	mkdir -p gen
 	mmark draft-jennings-game-state-over-rtp.md > gen/draft-jennings-game-state-over-rtp.xml
