@@ -36,9 +36,13 @@ organization = "Cisco"
 
 .# Abstract
 
-This specification defines an RTP payload to send game moves and objects
-over RTP. This is useful for games as well collaboration systems that
-use augment or virtual reality.
+This specification defines an Real Time Protocol (RTP) payload to send
+game moves and the state of game objects over RTP. This is useful for
+games as well collaboration systems that use augment or virtual reality.
+
+RTP provide a to synchronize game state between players with robust
+technique for recovery from network packet loss while still having low
+latency.
 
 {mainmatter}
 
@@ -121,6 +125,28 @@ Loc2 ::=
 Loc2 has a location as Float32 followed by the rate of change in
 location per second as Float16.
 
+## Scale
+
+```
+Scale1 ::=
+Float16 /* all dimensions */
+```
+
+Scale1 will scale the object in all dimensions equally.
+
+```
+Scale2 ::=
+ Float32 /* x */
+ Float32 /* y */
+ Float32 /* z */
+ Float16 /* vx */
+ Float16 /* vy */
+ Float16 /* vz */
+ ```
+ 
+Scale2 has a scale in each axis as Float32 followed by the rate of change in
+the scale per second as Float16.
+
 ## Normal
 
 ```
@@ -197,7 +223,7 @@ Defines a linear translation of a child object from a base object.
 TextureUrl1 ::= String
 ```
 
-URL of image with texture map. JPEG SHOULD be supported.
+URL of image with texture map. JPEG images SHOULD be supported.
 
 ## Mesh URL 
 
@@ -260,6 +286,33 @@ that contains optional tag, length, value tuples.
 
 ## Common Objects
 
+### Generic Game Object
+
+It is common to need describe the location, rotation, scale, and parent
+for objects in a scene.
+
+```
+Object1 ::= tagObject1 Length ObjectID Time1
+ Loc1
+ Rot1
+ Scale1
+  ( tagParent1 Length ObjectID )? /* Optional Parent */
+```
+Object1 contains a simple 3D location, rotation, scale and an optional
+ID of a parent object. 
+
+```
+Object2 ::= tagObject2 Length ObjectID Time1
+ Loc2
+ Rot2
+ Scale2
+ ( tagParent1 Length ObjectID )? /* Optional Parent */
+```
+
+Object2 has the same information but with the ability to scale
+differently in each dimension and derivates that describe how all the
+paramaters change over time. 
+
 ### Player Head
 
 ```
@@ -282,8 +335,9 @@ Object with the following variable length arrays:
 
 
 ```
-Mesh1 ::= tagMesh1 Length ObjectID 
- VarUInt /* num Vertexes */ 
+Mesh1 ::= tagMesh1 Length ObjectID
+ ( TextureUrl1 | TextureRtpPT1 )
+ VarUInt /* num Vertexes */
  Loc1+ /* vertexes */ 
  VarUInt /* numNormals */ 
  Norm1* /* normals */
@@ -299,6 +353,12 @@ size as the vertex and define the normal for each vertex. The uv array
 must be empty or same size as vertex array and have the u,v coordinate
 in the texture map for the vertex.
 
+The texture can be defined by a URL that may referer to some local
+resource or a resource retrieved over the network. Alternatively, the
+texture can reference a local RTP video stream in which case the most
+recently received frame of video is used as the texture and texture
+updates with new frames of video. 
+
 The triangles array can be of a different size from the vertex array.
 Each entry defines one triangle in the mesh and contains the index of
 the three vertex in the vertexes array. Vertexes MUST be in counter
@@ -308,8 +368,6 @@ An important limitation to note is that Objects can not span RTP packets
 so the Mesh needs to be small enough that it size is less that the
 MTU. A typical limit might be as low as 50 triangles. 
 
-Note: when the arrays are encoded, they include the length of the
-array and is defined in the encoding section.
 
 
 ### External Mesh
@@ -406,8 +464,7 @@ indicates the type followed by a length of the object (so it can be
 skipped). Any optional or variable parts of the object also use tags so
 that the decoder can always be implemented as a LL(1) parser. 
 
-In general, little endian encoding is used on the wire to reduce byte
-swaps on the most common hardware.
+In general, network byte order encoding is used on the wire.
 
 When encoding lengths, it represent the number of bytes following the
 length and does not include the size of the length or information before
@@ -468,9 +525,6 @@ VarUInt are encoded as:
 * Top bits of first byte is 1110,0010 then next 8 bytes 64 bit unsigned integer 
 
 
-TODO: get clearer on byte order on wire
-
-
 ## String
 
 Strings are encoded as a VarUInt length in bytes (not characters)
@@ -484,9 +538,8 @@ by the binary data that goes in the blob.
 # Full Intra Request
 
 RTP supports a Full Intra Request (FIR) Feedback Controll feedback
-messages. When an RTP sender receives a FIR, it SHOULD send a full
-copy of all the current game state. 
-
+messages. When an RTP sender receives a FIR, it SHOULD send a copy
+of all the relevant game state.
 
 # IANA
 
@@ -500,6 +553,11 @@ parameters. The RTP marker bit is not used. The RTP clock MUST be 90 kHz.
 
 Multiple Objects as defined in this specification can be concatenated
 into one RTP payload.
+
+TODO: The SDP MAY include an objectTags type that indicates the tag values of
+all the supported objects types.
+
+TODO: defines storage format as wells as RTP payload format details.
 
 ## Game State Tag Registry
 
@@ -520,9 +578,13 @@ Initial assignments are:
 | tagInvalid |0 |
 | tagHead1 |  1 |
 | tagHand1 | 2 |
+| tagObject1 | 3 |
+| tagParent1 | 4 |
 | tagMesh1 | 128 |
 | tagHand2 | 129 |
 | tagHeadIPD1 | 130 |
+| tagObject2 | 131 |
+| tagMesh2 | 132 |
 
 # Security
 
@@ -535,6 +597,10 @@ tracking a persons hand might identify that user.
 # Acknowledgments
 
 Thanks to Paul Jones for comments and writing an implementation. 
+
+# Implementations
+
+An C++ open source implementation is available at: TODO.
 
 # Test Vectors
 
@@ -586,7 +652,6 @@ For each object, an API to get the predicted values at a given time.
 Head1 ::= tagHead1 Length ObjectID Time1 Loc2 Rot2 
   ( tagHeadIpd Length Float16 /* IPD */ )?
   
-
 Mesh1 ::= tagMesh1 Length ObjectID 
  VarUInt /* num Vertexes */ 
  Loc1+ /* vertexes */ 
@@ -597,12 +662,22 @@ Mesh1 ::= tagMesh1 Length ObjectID
  VarUInt /* numTrianglesIndex */
  VarUInt+ /* trianglesIndex */
 
+Object1 ::= tagObject1 Length ObjectID Time1
+ Loc1
+ Rot1
+ Scale1
+  ( tagParent1 Length ObjectID )? /* Optional Parent */
+
+Object2 ::= tagObject2 Length ObjectID Time1
+ Loc2
+ Rot2
+ Scale2
+ ( tagParent1 Length ObjectID )? /* Optional Parent */
+
 
 Hand1 ::= tagHand1 Length ObjectID Time1
  Boolean /* left */ 
  Loc2 Rot2 
-
-
 
 Hand2 ::= tagHand2 Length ObjectID Time1
  Boolean /* left */ 
@@ -637,19 +712,19 @@ Hand2 ::= tagHand2 Length ObjectID Time1
 
 Tag ::= VarUInt
 
-
-
 tagInvalid ::= #x00
 tagHead1 ::= #x01
 tagHand1 ::= #x02
+tagObject1 ::= #x03
+tagParent1 ::= #x04
 tagMesh1 ::= #x80 #x00
 tagHand2 ::= #x80 #x01
 tagHeadIpd ::= #x80 #x02
-
+tagObject2 ::= #x80 #x03
 
 ObjectID ::= VarUInt
-Length ::= VarUInt
 
+Length ::= VarUInt
 
 Loc1 ::=
  Float32 /* x */
@@ -664,6 +739,17 @@ Loc2 ::=
  Float16 /* vy */
  Float16 /* vz */
 
+Scale1 ::=
+ Float16 /* all dimentions */
+
+Scale2 ::=
+ Float32 /* x */
+ Float32 /* y */
+ Float32 /* z */
+ Float16 /* vx */
+ Float16 /* vy */
+ Float16 /* vz */
+ 
 Norm1 ::=
  Float16 /* x */
  Float16 /* y */
@@ -673,13 +759,11 @@ TextureUV1 ::=
  VarUInt /* u */
  VarUInt /* v */
 
-
 Rot1 ::=
  Float16 /* i */
  Float16 /* j */
  Float16 /* k */
- /* w computed based on quaternion is normalized */
-
+ /* w computed based on quaternion is nomalized */
 
 Rot2 ::=
  Float16 /* s.i */
@@ -699,7 +783,6 @@ TextureUrl1 ::= String
 TextureRtpPT1 ::= UInt8 /* pt */ 
 
 Time1 ::= UInt16 /* time in ms */ 
-
 
 Tag ::= VarUInt
 
@@ -738,4 +821,5 @@ VarInt ::=
  ( #xE2 Int64 )  
 
 byte ::= [#x00-#xFF]
+
 ```
