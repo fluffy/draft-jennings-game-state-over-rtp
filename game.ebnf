@@ -1,7 +1,8 @@
 Head1 ::= tagHead1 Length ObjectID Time1 Loc2 Rot2 
   ( tagHeadIpd Length Float16 /* IPD */ )?
   
-Mesh1 ::= tagMesh1 Length ObjectID 
+Mesh1 ::= tagMesh1 Length ObjectID
+ ( TextureUrl1 | TextureRtpPT1 )
  VarUInt /* num Vertexes */ 
  Loc1+ /* vertexes */ 
  VarUInt /* numNormals */ 

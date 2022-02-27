@@ -325,8 +325,9 @@ Object with the following variable length arrays:
 
 
 ```
-Mesh1 ::= tagMesh1 Length ObjectID 
- VarUInt /* num Vertexes */ 
+Mesh1 ::= tagMesh1 Length ObjectID
+ ( TextureUrl1 | TextureRtpPT1 )
+ VarUInt /* num Vertexes */
  Loc1+ /* vertexes */ 
  VarUInt /* numNormals */ 
  Norm1* /* normals */
@@ -342,6 +343,12 @@ size as the vertex and define the normal for each vertex. The uv array
 must be empty or same size as vertex array and have the u,v coordinate
 in the texture map for the vertex.
 
+The texture can be defined by a URL that may referer to some local
+resource or a resource retrieved over the network. Alternatively, the
+texture can reference a local RTP video stream in which case the most
+recently received frame of video is used as the texture and texture
+updates with new frames of video. 
+
 The triangles array can be of a different size from the vertex array.
 Each entry defines one triangle in the mesh and contains the index of
 the three vertex in the vertexes array. Vertexes MUST be in counter
@@ -351,8 +358,6 @@ An important limitation to note is that Objects can not span RTP packets
 so the Mesh needs to be small enough that it size is less that the
 MTU. A typical limit might be as low as 50 triangles. 
 
-Note: when the arrays are encoded, they include the length of the
-array and is defined in the encoding section.
 
 ### Player Hand
 
