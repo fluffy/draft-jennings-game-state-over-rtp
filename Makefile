@@ -6,26 +6,29 @@
 
 .PHONE: all clean lint format
 
-all: gen/draft-jennings-game-state-over-rtp.txt game-gramar.html gen/draft-jennings-game-state-over-rtp.pdf 
+all:  game-gramar.html \
+	gen/draft-jennings-dispatch-game-state-over-rtp.pdf \
+	gen/draft-jennings-dispatch-game-state-over-rtp.txt \
+	gen/draft-jennings-dispatch-game-state-over-rtp.html
 
 clean:
 	rm -rf gen/*
 
-lint: gen/draft-jennings-game-state-over-rtp.xml
-	rfclint gen/draft-jennings-game-state-over-rtp.xml
+lint: gen/draft-jennings-dispatch-game-state-over-rtp.xml
+	rfclint gen/draft-jennings-dispatch-game-state-over-rtp.xml
 
-gen/draft-jennings-game-state-over-rtp.xml: draft-jennings-game-state-over-rtp.md
+gen/draft-jennings-dispatch-game-state-over-rtp.xml: draft-jennings-dispatch-game-state-over-rtp.md
 	mkdir -p gen
-	mmark draft-jennings-game-state-over-rtp.md > gen/draft-jennings-game-state-over-rtp.xml
+	mmark draft-jennings-dispatch-game-state-over-rtp.md > gen/draft-jennings-dispatch-game-state-over-rtp.xml
 
-gen/draft-jennings-game-state-over-rtp.txt: gen/draft-jennings-game-state-over-rtp.xml
-	xml2rfc --text --v3 gen/draft-jennings-game-state-over-rtp.xml
+gen/draft-jennings-dispatch-game-state-over-rtp.txt: gen/draft-jennings-dispatch-game-state-over-rtp.xml
+	xml2rfc --text --v3 gen/draft-jennings-dispatch-game-state-over-rtp.xml
 
-gen/draft-jennings-game-state-over-rtp.pdf: gen/draft-jennings-game-state-over-rtp.xml
-	xml2rfc --pdf --v3 gen/draft-jennings-game-state-over-rtp.xml
+gen/draft-jennings-dispatch-game-state-over-rtp.pdf: gen/draft-jennings-dispatch-game-state-over-rtp.xml
+	xml2rfc --pdf --v3 gen/draft-jennings-dispatch-game-state-over-rtp.xml
 
-gen/draft-jennings-game-state-over-rtp.html: gen/draft-jennings-game-state-over-rtp.xml
-	xml2rfc --html --v3 gen/draft-jennings-game-state-over-rtp.xml
+gen/draft-jennings-dispatch-game-state-over-rtp.html: gen/draft-jennings-dispatch-game-state-over-rtp.xml
+	xml2rfc --html --v3 gen/draft-jennings-dispatch-game-state-over-rtp.xml
 
 gen/game.pdf: abstract.md  game-spec.md contributors.md 
 	mkdir -p gen 

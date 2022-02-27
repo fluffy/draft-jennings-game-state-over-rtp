@@ -9,7 +9,7 @@ keyword = ["realtime","game"]
 [seriesInfo]
 status = "standard"
 name = "Internet-Draft"
-value = "draft-jennings-game-state-over-rtp-00"
+value = "draft-jennings-dispatch-game-state-over-rtp-00"
 stream = "IETF"
 
 [[author]]
@@ -19,6 +19,19 @@ fullname="Cullen Jennings"
 organization = "cisco"
   [author.address]
   email = "fluffy@iii.ca"
+  [author.address.postal]
+  country = "Canada"
+
+[[author]]
+initials="R."
+surname="Logan"
+fullname="Rich Logan"
+organization = "Cisco"
+  [author.address]
+  email = "rilogan@cisco.com"
+  [author.address.postal]
+  country = "United Kingdom"
+
 %%%
 
 .# Abstract
@@ -82,7 +95,8 @@ representing state with backwards compatibility.
 # Primitives
 
 This section defined so primitives that are useful in defining
-objects. The definition are in W3C style EBNF [https://www.w3.org/TR/2010/REC-xquery-20101214/#EBNFNotation].
+objects. The definition are in W3C style EBNF
+[https://www.w3.org/TR/2010/REC-xquery-20101214/#EBNFNotation].
 
 ## Location
 
@@ -137,7 +151,8 @@ Rot1 ::=
  Float16 /* k */
  ```
 
-The non real parts of a normalized rotation quaternion. The real part can be computed based on it is normalized. 
+The non real parts of a normalized rotation quaternion. The real part
+can be computed based on it is normalized.
 
 ```
 Rot2 ::=
@@ -356,7 +371,7 @@ kbps. TODO Check.
 
 # Encoding
 
-Each RTP payload will contain one more more objects. An object can not
+Each RTP payload will contain one or more objects. An object can not
 be split across two RTP packets. The general design is that if the
 decoder does has not been coded to understand a given object type, the
 decode can skip over the object to the next object but will not be able
@@ -442,6 +457,11 @@ followed by a UTF-8 version of the string.
 Blobs are encoded as a VarUInt length in bytes followed
 by the binary data that goes in the blob. 
 
+# Full Intra Request
+
+RTP supports a Full Intra Request (FIR) Feedback Controll feedback
+messages. When an RTP sender receives a FIR, it SHOULD send a full
+copy of all the current game state. 
 
 
 # IANA
@@ -490,7 +510,7 @@ tracking a persons hand might identify that user.
 
 # Acknowledgments
 
-Thanks to Paul Jones. 
+Thanks to Paul Jones for comments and writing an implementation. 
 
 # Test Vectors
 
