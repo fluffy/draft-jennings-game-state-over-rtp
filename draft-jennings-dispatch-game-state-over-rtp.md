@@ -301,6 +301,20 @@ MTU. A typical limit might be as low as 50 triangles.
 Note: when the arrays are encoded, they include the length of the
 array and is defined in the encoding section.
 
+
+### External Mesh
+
+The object allows a mesh to be loaded from an exernal URL then
+moved, rotated, and scaled. An optional textgure maps may be used.
+
+```
+Mesh2::= tagMesh2 Length ObjectID
+  Loc2 Rot2 Scale2
+  MeshUrl1
+  ( TextureUrl1 | TextureRtpPT1 )? /* Optiaonal Texture Map */
+  ( tagParent1 Length ObjectID )? /* Optional Parent */
+ ```
+ 
 ### Player Hand
 
 ```
