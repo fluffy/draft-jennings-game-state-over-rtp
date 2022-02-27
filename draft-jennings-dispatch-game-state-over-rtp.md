@@ -477,6 +477,9 @@ parameters. The RTP marker bit is not used. The RTP clock MUST be 90 kHz.
 Multiple Objects as defined in this specification can be concatenated
 into one RTP payload.
 
+The SDP MAY include an objectTags type that indicates the tag values of
+all the supported objects types.
+
 ## Game State Tag Registry
 
 The specification defines a new IANA registry for tag values. All values
@@ -499,6 +502,8 @@ Initial assignments are:
 | tagMesh1 | 128 |
 | tagHand2 | 129 |
 | tagHeadIPD1 | 130 |
+| tagObject2 | 131 |
+| tagMesh2 | 132 |
 
 # Security
 
