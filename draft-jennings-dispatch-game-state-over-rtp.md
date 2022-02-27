@@ -36,9 +36,13 @@ organization = "Cisco"
 
 .# Abstract
 
-This specification defines an RTP payload to send game moves and objects
-over RTP. This is useful for games as well collaboration systems that
-use augment or virtual reality.
+This specification defines an Real Time Protocol (RTP) payload to send
+game moves and the state of game objects over RTP. This is useful for
+games as well collaboration systems that use augment or virtual reality.
+
+RTP provide a to synchronize game state between players with robust
+technique for recovery from network packet loss while still having low
+latency.
 
 {mainmatter}
 
@@ -197,7 +201,7 @@ Defines a linear translation of a child object from a base object.
 TextureUrl1 ::= String
 ```
 
-URL of image with texture map. JPEG SHOULD be supported.
+URL of image with texture map. JPEG images SHOULD be supported.
 
 
 ## Texture Stream
@@ -456,9 +460,8 @@ by the binary data that goes in the blob.
 # Full Intra Request
 
 RTP supports a Full Intra Request (FIR) Feedback Controll feedback
-messages. When an RTP sender receives a FIR, it SHOULD send a full
-copy of all the current game state. 
-
+messages. When an RTP sender receives a FIR, it SHOULD send a copy
+of all the relevant game state.
 
 # IANA
 
