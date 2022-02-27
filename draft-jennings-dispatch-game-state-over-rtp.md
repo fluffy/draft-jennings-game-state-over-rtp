@@ -521,6 +521,10 @@ tracking a persons hand might identify that user.
 
 Thanks to Paul Jones for comments and writing an implementation. 
 
+# Implementations
+
+An C++ open source implementation is available at: TODO.
+
 # Test Vectors
 
 ## Head Location
