@@ -382,8 +382,7 @@ indicates the type followed by a length of the object (so it can be
 skipped). Any optional or variable parts of the object also use tags so
 that the decoder can always be implemented as a LL(1) parser. 
 
-In general, little endian encoding is used on the wire to reduce byte
-swaps on the most common hardware.
+In general, network byte order encoding is used on the wire.
 
 When encoding lengths, it represent the number of bytes following the
 length and does not include the size of the length or information before
@@ -442,9 +441,6 @@ VarUInt are encoded as:
 * Top bits of first byte is 1110,0001 then next 4 bytes 32 bit unsigned integer 
 
 * Top bits of first byte is 1110,0010 then next 8 bytes 64 bit unsigned integer 
-
-
-TODO: get clearer on byte order on wire
 
 
 ## String
