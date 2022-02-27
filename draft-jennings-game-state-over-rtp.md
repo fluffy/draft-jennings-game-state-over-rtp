@@ -7,7 +7,7 @@ workgroup = ""
 keyword = ["realtime","game"]
 
 [seriesInfo]
-status = "informational"
+status = "standard"
 name = "Internet-Draft"
 value = "draft-jennings-game-state-over-rtp-00"
 stream = "IETF"
