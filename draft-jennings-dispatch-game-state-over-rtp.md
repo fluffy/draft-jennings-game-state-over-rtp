@@ -477,8 +477,10 @@ parameters. The RTP marker bit is not used. The RTP clock MUST be 90 kHz.
 Multiple Objects as defined in this specification can be concatenated
 into one RTP payload.
 
-The SDP MAY include an objectTags type that indicates the tag values of
+TODO: The SDP MAY include an objectTags type that indicates the tag values of
 all the supported objects types.
+
+TODO: defines storage format as wells as RTP payload format details.
 
 ## Game State Tag Registry
 
