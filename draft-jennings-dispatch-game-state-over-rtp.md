@@ -291,9 +291,9 @@ must be empty or same size as vertex array and have the u,v coordinate
 in the texture map for the vertex.
 
 The texture can be defined by a URL that may referer to some local
-resource or a resouce retreived over the network. Alternatively, the
+resource or a resource retrieved over the network. Alternatively, the
 texture can reference a local RTP video stream in which case the most
-recently recevied frame of video is used as the texture and texture
+recently received frame of video is used as the texture and texture
 updates with new frames of video. 
 
 The triangles array can be of a different size from the vertex array.
