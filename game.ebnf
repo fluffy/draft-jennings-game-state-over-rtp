@@ -15,7 +15,7 @@ Mesh1 ::= tagMesh1 Length ObjectID
 Mesh2::= tagMesh2 Length ObjectID
   Loc2 Rot2 Scale2
   MeshUrl1
-  ( TextureUrl1 | TextureRtpPT1 )? /* Optiaonal Texture Map */
+  ( TextureUrl1 | TextureRtpPT1 )? /* Optional Texture Map */
   ( tagParent1 Length ObjectID )? /* Optional Parent */
  
 Object1 ::= tagObject1 Length ObjectID Time1
@@ -96,7 +96,7 @@ Loc2 ::=
  Float16 /* vz */
 
 Scale1 ::=
- Float16 /* all dimentions */
+ Float16 /* all dimensions */
 
 Scale2 ::=
  Float32 /* x */
@@ -119,7 +119,7 @@ Rot1 ::=
  Float16 /* i */
  Float16 /* j */
  Float16 /* k */
- /* w computed based on quaternion is nomalized */
+ /* w computed based on quaternion is normalized */
 
 Rot2 ::=
  Float16 /* s.i */
@@ -179,4 +179,3 @@ VarInt ::=
  ( #xE2 Int64 )  
 
 byte ::= [#x00-#xFF]
-

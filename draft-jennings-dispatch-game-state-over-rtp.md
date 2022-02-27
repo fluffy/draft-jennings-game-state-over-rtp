@@ -40,7 +40,7 @@ This specification defines an Real Time Protocol (RTP) payload to send
 game moves and the state of game objects over RTP. This is useful for
 games as well collaboration systems that use augment or virtual reality.
 
-RTP provide a to synchronize game state between players with robust
+RTP provide a way to synchronize game state between players with robust
 technique for recovery from network packet loss while still having low
 latency.
 
@@ -82,10 +82,9 @@ The objects are defined as a series of primitives that define common
 <types. The objects and updates to state are encoded with Tag Length
 Value (TLV) style encoding so that receivers can skip objects they do
 not understand. The Objects in an single RTP packet MUST be processed in
-order. This allows a sender to write state in an old and new format at
-the new format to override values in the old format in a single RTP
-packet. This allows for an easy upgrade from old to new ways or
-representing state with backwards compatibility.
+order. This allows a sender to write state in an old format followed by new format and
+the new format will override values in the old format.
+This allows for easy upgrade of the protocol with backwards compatibility.
 
 # Goals:
 
@@ -98,7 +97,7 @@ representing state with backwards compatibility.
 
 # Primitives
 
-This section defined so primitives that are useful in defining
+This section defines primitives that are useful in defining
 objects. The definition are in W3C style EBNF
 [https://www.w3.org/TR/2010/REC-xquery-20101214/#EBNFNotation].
 
@@ -233,7 +232,7 @@ MeshUrl1 ::= String
 
 URL of external mesh.
 
-Open Issue: Any mandetory to implements mesh formats ?
+Open Issue: Any mandatory to implements mesh formats ?
 
 
 ## Texture Stream
@@ -311,7 +310,7 @@ Object2 ::= tagObject2 Length ObjectID Time1
 
 Object2 has the same information but with the ability to scale
 differently in each dimension and derivates that describe how all the
-paramaters change over time. 
+parameters change over time. 
 
 ### Player Head
 
@@ -353,7 +352,7 @@ size as the vertex and define the normal for each vertex. The uv array
 must be empty or same size as vertex array and have the u,v coordinate
 in the texture map for the vertex.
 
-The texture can be defined by a URL that may referer to some local
+The texture can be defined by a URL that may refer to some local
 resource or a resource retrieved over the network. Alternatively, the
 texture can reference a local RTP video stream in which case the most
 recently received frame of video is used as the texture and texture
@@ -537,7 +536,7 @@ by the binary data that goes in the blob.
 
 # Full Intra Request
 
-RTP supports a Full Intra Request (FIR) Feedback Controll feedback
+RTP supports a Full Intra Request (FIR) Feedback Control feedback
 messages. When an RTP sender receives a FIR, it SHOULD send a copy
 of all the relevant game state.
 
@@ -652,7 +651,8 @@ For each object, an API to get the predicted values at a given time.
 Head1 ::= tagHead1 Length ObjectID Time1 Loc2 Rot2 
   ( tagHeadIpd Length Float16 /* IPD */ )?
   
-Mesh1 ::= tagMesh1 Length ObjectID 
+Mesh1 ::= tagMesh1 Length ObjectID
+ ( TextureUrl1 | TextureRtpPT1 )
  VarUInt /* num Vertexes */ 
  Loc1+ /* vertexes */ 
  VarUInt /* numNormals */ 
@@ -662,6 +662,12 @@ Mesh1 ::= tagMesh1 Length ObjectID
  VarUInt /* numTrianglesIndex */
  VarUInt+ /* trianglesIndex */
 
+Mesh2::= tagMesh2 Length ObjectID
+  Loc2 Rot2 Scale2
+  MeshUrl1
+  ( TextureUrl1 | TextureRtpPT1 )? /* Optional Texture Map */
+  ( tagParent1 Length ObjectID )? /* Optional Parent */
+ 
 Object1 ::= tagObject1 Length ObjectID Time1
  Loc1
  Rot1
@@ -673,7 +679,6 @@ Object2 ::= tagObject2 Length ObjectID Time1
  Rot2
  Scale2
  ( tagParent1 Length ObjectID )? /* Optional Parent */
-
 
 Hand1 ::= tagHand1 Length ObjectID Time1
  Boolean /* left */ 
@@ -720,6 +725,7 @@ tagParent1 ::= #x04
 tagMesh1 ::= #x80 #x00
 tagHand2 ::= #x80 #x01
 tagHeadIpd ::= #x80 #x02
+tagMesh2 ::= #x80 #x04
 tagObject2 ::= #x80 #x03
 
 ObjectID ::= VarUInt
@@ -740,7 +746,7 @@ Loc2 ::=
  Float16 /* vz */
 
 Scale1 ::=
- Float16 /* all dimentions */
+ Float16 /* all dimensions */
 
 Scale2 ::=
  Float32 /* x */
@@ -763,7 +769,7 @@ Rot1 ::=
  Float16 /* i */
  Float16 /* j */
  Float16 /* k */
- /* w computed based on quaternion is nomalized */
+ /* w computed based on quaternion is normalized */
 
 Rot2 ::=
  Float16 /* s.i */
@@ -779,6 +785,8 @@ Transform1 ::=
  Float16 /* tz */ 
 
 TextureUrl1 ::= String
+
+MeshUrl1 ::= String
 
 TextureRtpPT1 ::= UInt8 /* pt */ 
 
@@ -821,5 +829,4 @@ VarInt ::=
  ( #xE2 Int64 )  
 
 byte ::= [#x00-#xFF]
-
 ```
