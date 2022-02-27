@@ -191,13 +191,23 @@ Transform1 ::=
 
 Defines a linear translation of a child object from a base object.
 
-## Texture
+## Texture URL 
 
 ```
 TextureUrl1 ::= String
 ```
 
 URL of image with texture map. JPEG SHOULD be supported.
+
+## Mesh URL 
+
+```
+MeshUrl1 ::= String
+```
+
+URL of external mesh.
+
+Open Issue: Any mandetory to implements mesh formats ?
 
 
 ## Texture Stream
@@ -304,14 +314,14 @@ array and is defined in the encoding section.
 
 ### External Mesh
 
-The object allows a mesh to be loaded from an exernal URL then
-moved, rotated, and scaled. An optional textgure maps may be used.
+The object allows a mesh to be loaded from an external URL then
+moved, rotated, and scaled. An optional texture maps may be used.
 
 ```
 Mesh2::= tagMesh2 Length ObjectID
   Loc2 Rot2 Scale2
   MeshUrl1
-  ( TextureUrl1 | TextureRtpPT1 )? /* Optiaonal Texture Map */
+  ( TextureUrl1 | TextureRtpPT1 )? /* Optional Texture Map */
   ( tagParent1 Length ObjectID )? /* Optional Parent */
  ```
  
