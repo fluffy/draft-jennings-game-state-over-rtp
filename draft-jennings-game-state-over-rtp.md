@@ -9,7 +9,7 @@ keyword = ["realtime","game"]
 [seriesInfo]
 status = "standard"
 name = "Internet-Draft"
-value = "draft-jennings-game-state-over-rtp-00"
+value = "draft-jennings-dispatch-game-state-over-rtp-00"
 stream = "IETF"
 
 [[author]]
@@ -369,7 +369,7 @@ kbps. TODO Check.
 
 # Encoding
 
-Each RTP payload will contain one more more objects. An object can not
+Each RTP payload will contain one or more objects. An object can not
 be split across two RTP packets. The general design is that if the
 decoder does has not been coded to understand a given object type, the
 decode can skip over the object to the next object but will not be able
@@ -503,7 +503,7 @@ tracking a persons hand might identify that user.
 
 # Acknowledgments
 
-Thanks to Paul Jones. 
+Thanks to Paul Jones for comments and writing an implementation. 
 
 # Test Vectors
 
