@@ -121,6 +121,28 @@ Loc2 ::=
 Loc2 has a location as Float32 followed by the rate of change in
 location per second as Float16.
 
+## Scale
+
+```
+Scale1 ::=
+Float16 /* all dimensions */
+```
+
+Scale1 will scale the object in all dimensions equally.
+
+```
+Scale2 ::=
+ Float32 /* x */
+ Float32 /* y */
+ Float32 /* z */
+ Float16 /* vx */
+ Float16 /* vy */
+ Float16 /* vz */
+ ```
+ 
+Scale2 has a scale in each axis as Float32 followed by the rate of change in
+the scale per second as Float16.
+
 ## Normal
 
 ```
@@ -249,6 +271,33 @@ that contains optional tag, length, value tuples.
 
 
 ## Common Objects
+
+### Generic Game Object
+
+It is common to need describe the location, rotation, scale, and parent
+for objects in a scene.
+
+```
+Object1 ::= tagObject1 Length ObjectID Time1
+ Loc1
+ Rot1
+ Scale1
+  ( tagParent1 Length ObjectID )? /* Optional Parent */
+```
+Object1 contains a simple 3D location, rotation, scale and an optional
+ID of a parent object. 
+
+```
+Object2 ::= tagObject2 Length ObjectID Time1
+ Loc2
+ Rot2
+ Scale2
+ ( tagParent1 Length ObjectID )? /* Optional Parent */
+```
+
+Object2 has the same information but with the ability to scale
+differently in each dimension and derivates that describe how all the
+paramaters change over time. 
 
 ### Player Head
 
@@ -562,7 +611,6 @@ For each object, an API to get the predicted values at a given time.
 Head1 ::= tagHead1 Length ObjectID Time1 Loc2 Rot2 
   ( tagHeadIpd Length Float16 /* IPD */ )?
   
-
 Mesh1 ::= tagMesh1 Length ObjectID 
  VarUInt /* num Vertexes */ 
  Loc1+ /* vertexes */ 
@@ -573,12 +621,22 @@ Mesh1 ::= tagMesh1 Length ObjectID
  VarUInt /* numTrianglesIndex */
  VarUInt+ /* trianglesIndex */
 
+Object1 ::= tagObject1 Length ObjectID Time1
+ Loc1
+ Rot1
+ Scale1
+  ( tagParent1 Length ObjectID )? /* Optional Parent */
+
+Object2 ::= tagObject2 Length ObjectID Time1
+ Loc2
+ Rot2
+ Scale2
+ ( tagParent1 Length ObjectID )? /* Optional Parent */
+
 
 Hand1 ::= tagHand1 Length ObjectID Time1
  Boolean /* left */ 
  Loc2 Rot2 
-
-
 
 Hand2 ::= tagHand2 Length ObjectID Time1
  Boolean /* left */ 
@@ -613,19 +671,19 @@ Hand2 ::= tagHand2 Length ObjectID Time1
 
 Tag ::= VarUInt
 
-
-
 tagInvalid ::= #x00
 tagHead1 ::= #x01
 tagHand1 ::= #x02
+tagObject1 ::= #x03
+tagParent1 ::= #x04
 tagMesh1 ::= #x80 #x00
 tagHand2 ::= #x80 #x01
 tagHeadIpd ::= #x80 #x02
-
+tagObject2 ::= #x80 #x03
 
 ObjectID ::= VarUInt
-Length ::= VarUInt
 
+Length ::= VarUInt
 
 Loc1 ::=
  Float32 /* x */
@@ -640,6 +698,17 @@ Loc2 ::=
  Float16 /* vy */
  Float16 /* vz */
 
+Scale1 ::=
+ Float16 /* all dimentions */
+
+Scale2 ::=
+ Float32 /* x */
+ Float32 /* y */
+ Float32 /* z */
+ Float16 /* vx */
+ Float16 /* vy */
+ Float16 /* vz */
+ 
 Norm1 ::=
  Float16 /* x */
  Float16 /* y */
@@ -649,13 +718,11 @@ TextureUV1 ::=
  VarUInt /* u */
  VarUInt /* v */
 
-
 Rot1 ::=
  Float16 /* i */
  Float16 /* j */
  Float16 /* k */
- /* w computed based on quaternion is normalized */
-
+ /* w computed based on quaternion is nomalized */
 
 Rot2 ::=
  Float16 /* s.i */
@@ -675,7 +742,6 @@ TextureUrl1 ::= String
 TextureRtpPT1 ::= UInt8 /* pt */ 
 
 Time1 ::= UInt16 /* time in ms */ 
-
 
 Tag ::= VarUInt
 
@@ -714,4 +780,5 @@ VarInt ::=
  ( #xE2 Int64 )  
 
 byte ::= [#x00-#xFF]
+
 ```

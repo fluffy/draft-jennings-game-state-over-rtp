@@ -1,4 +1,3 @@
-
 Head1 ::= tagHead1 Length ObjectID Time1 Loc2 Rot2 
   ( tagHeadIpd Length Float16 /* IPD */ )?
   
@@ -11,6 +10,19 @@ Mesh1 ::= tagMesh1 Length ObjectID
  TextureUV1* /*  textureCoord */
  VarUInt /* numTrianglesIndex */
  VarUInt+ /* trianglesIndex */
+
+Object1 ::= tagObject1 Length ObjectID Time1
+ Loc1
+ Rot1
+ Scale1
+  ( tagParent1 Length ObjectID )? /* Optional Parent */
+
+Object2 ::= tagObject2 Length ObjectID Time1
+ Loc2
+ Rot2
+ Scale2
+ ( tagParent1 Length ObjectID )? /* Optional Parent */
+
 
 Hand1 ::= tagHand1 Length ObjectID Time1
  Boolean /* left */ 
@@ -52,9 +64,12 @@ Tag ::= VarUInt
 tagInvalid ::= #x00
 tagHead1 ::= #x01
 tagHand1 ::= #x02
+tagObject1 ::= #x03
+tagParent1 ::= #x04
 tagMesh1 ::= #x80 #x00
 tagHand2 ::= #x80 #x01
 tagHeadIpd ::= #x80 #x02
+tagObject2 ::= #x80 #x03
 
 ObjectID ::= VarUInt
 
@@ -73,6 +88,17 @@ Loc2 ::=
  Float16 /* vy */
  Float16 /* vz */
 
+Scale1 ::=
+ Float16 /* all dimentions */
+
+Scale2 ::=
+ Float32 /* x */
+ Float32 /* y */
+ Float32 /* z */
+ Float16 /* vx */
+ Float16 /* vy */
+ Float16 /* vz */
+ 
 Norm1 ::=
  Float16 /* x */
  Float16 /* y */
