@@ -21,7 +21,7 @@ format:
 
 gen/draft-jennings-game-state-over-rtp.xml: draft-jennings-game-state-over-rtp.md
 	mkdir -p gen
-	mmark -w draft-jennings-game-state-over-rtp.md > gen/draft-jennings-game-state-over-rtp.xml
+	mmark draft-jennings-game-state-over-rtp.md > gen/draft-jennings-game-state-over-rtp.xml
 
 gen/draft-jennings-game-state-over-rtp.txt: gen/draft-jennings-game-state-over-rtp.xml
 	xml2rfc --text --v3 gen/draft-jennings-game-state-over-rtp.xml
