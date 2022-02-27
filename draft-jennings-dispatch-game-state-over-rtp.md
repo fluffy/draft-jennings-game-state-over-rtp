@@ -95,7 +95,8 @@ representing state with backwards compatibility.
 # Primitives
 
 This section defined so primitives that are useful in defining
-objects. The definition are in W3C style EBNF [https://www.w3.org/TR/2010/REC-xquery-20101214/#EBNFNotation].
+objects. The definition are in W3C style EBNF
+[https://www.w3.org/TR/2010/REC-xquery-20101214/#EBNFNotation].
 
 ## Location
 
@@ -150,7 +151,8 @@ Rot1 ::=
  Float16 /* k */
  ```
 
-The non real parts of a normalized rotation quaternion. The real part can be computed based on it is normalized. 
+The non real parts of a normalized rotation quaternion. The real part
+can be computed based on it is normalized.
 
 ```
 Rot2 ::=
