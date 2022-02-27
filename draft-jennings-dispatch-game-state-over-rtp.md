@@ -201,7 +201,7 @@ Defines a linear translation of a child object from a base object.
 TextureUrl1 ::= String
 ```
 
-URL of image with texture map. JPEG SHOULD be supported.
+URL of image with texture map. JPEG images SHOULD be supported.
 
 
 ## Texture Stream
