@@ -36,9 +36,13 @@ organization = "Cisco"
 
 .# Abstract
 
-This specification defines an RTP payload to send game moves and objects
-over RTP. This is useful for games as well collaboration systems that
-use augment or virtual reality.
+This specification defines an Real Time Protocol (RTP) payload to send
+game moves and the state of game objects over RTP. This is useful for
+games as well collaboration systems that use augment or virtual reality.
+
+RTP provide a to synchronize game state between players with robust
+technique for recovery from network packet loss while still having low
+latency.
 
 {mainmatter}
 
