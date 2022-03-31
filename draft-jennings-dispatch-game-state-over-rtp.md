@@ -161,8 +161,8 @@ Normal vector for a point.
 
 ```
 TextureUV1 ::=
- VarUInt /* u */
- VarUInt /* v */
+ Float32 /* u */
+ Float32 /* v */
 ```
 
 Location in texture map for a point.
@@ -756,8 +756,8 @@ Norm1 ::=
  Float16 /* z */
 
 TextureUV1 ::=
- VarUInt /* u */
- VarUInt /* v */
+ Float32 /* u */
+ Float32 /* v */
 
 Rot1 ::=
  Float16 /* i */
