@@ -536,12 +536,7 @@ RTP supports a Full Intra Request (FIR) Feedback Control feedback
 messages. When an RTP sender receives a FIR, it SHOULD send a copy
 of all the relevant game state.
 
-# IANA
-
 # RTP
-
-This section can be split out a separate payload draft we need some
-extra work.
 
 The media type is application/gamestate. There are no optional or required
 parameters. The RTP marker bit is not used. The RTP clock MUST be 90 kHz.
@@ -553,6 +548,8 @@ TODO: The SDP MAY include an objectTags type that indicates the tag values of
 all the supported objects types.
 
 TODO: define storage format as well as RTP payload format details.
+
+# IANA 
 
 ## Game State Tag Registry
 
