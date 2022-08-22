@@ -294,6 +294,7 @@ Object1 ::= tagObject1 Length ObjectID Time1
  Loc1
  Rot1
  Scale1
+ Boolean /* Active */
   ( tagParent1 Length ObjectID )? /* Optional Parent */
 ```
 Object1 contains a simple 3D location, rotation, scale and an optional
@@ -304,6 +305,7 @@ Object2 ::= tagObject2 Length ObjectID Time1
  Loc2
  Rot2
  Scale2
+ Boolean /* Active */
  ( tagParent1 Length ObjectID )? /* Optional Parent */
 ```
 
@@ -668,12 +670,14 @@ Object1 ::= tagObject1 Length ObjectID Time1
  Loc1
  Rot1
  Scale1
+ Boolean /* Active */
   ( tagParent1 Length ObjectID )? /* Optional Parent */
 
 Object2 ::= tagObject2 Length ObjectID Time1
  Loc2
  Rot2
  Scale2
+ Boolean /* Active */
  ( tagParent1 Length ObjectID )? /* Optional Parent */
 
 Hand1 ::= tagHand1 Length ObjectID Time1
