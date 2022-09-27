@@ -536,24 +536,54 @@ RTP supports a Full Intra Request (FIR) Feedback Control feedback
 messages. When an RTP sender receives a FIR, it SHOULD send a copy
 of all the relevant game state.
 
-# RTP
+# RTP and SDP
 
-The media type is application/gamestate. There are no optional or required
+The media type is application/gamestate and defined in Section TODO. There are no optional or required
 parameters. The RTP marker bit is not used. The RTP clock MUST be 90 kHz.
+
+An example m= and a= line in SDP could look like:
+```
+   m=application 49170 RTP/AVP 98
+   a=rtpmap:98 gamestate/90000
+```
 
 Multiple Objects as defined in this specification can be concatenated
 into one RTP payload.
 
-TODO: The SDP MAY include an objectTags type that indicates the tag values of
-all the supported objects types.
-
-TODO: define storage format as well as RTP payload format details.
+No storage format is defined.
 
 # IANA 
 
+## Media Type Registration
+
+This specification defines a new medisa type using the template defined in [RFC4288] and
+following the guidance provided in [RFC4855]. TODO REFS
+
+```
+   Type name: application
+   Subtype name: gamestate
+   Required parameters: TODO
+   Optional parameters: None.
+   Encoding considerations: This media is sent as binary data.
+   Security considerations: (IANA point to security seciton of this RFC)
+   Interoperability considerations: None.
+   Published specification: (IANA to replace with RFC number for htis specification)
+   Applications that use this media type: N/A
+   Fragment identifier considerations: N/A
+   Additional information: None
+   Person & email address to contact for further information: Cullen Jennings <fluffy@iii.ca>
+   Intended usage: COMMON
+   Restrictions on usage: N/A
+   Author: Cullen Jennings <email:fluffy@iii.ca>
+   Change controller: IESG
+   Provisional registration? (standards tree only): No
+```
+
+
 ## Game State Tag Registry
 
-The specification defines a new IANA registry for tag values. All values
+The specification defines a new IANA registry called "Game State Type
+Registry" for tag values. All values
 MUST be greater than zero.
 
 Values 1-127 are assigned by "IETF Review" as defined in [RFC8126], and
