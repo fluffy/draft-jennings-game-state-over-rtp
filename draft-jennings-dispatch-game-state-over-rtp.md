@@ -51,7 +51,7 @@ latency.
 Many real time applications, such as games, want to to share state
 about 3D objects across the network. This specification allows an
 application to define objects with state, and the current values of that
-state over RTP.
+state over RTP [@!RFC3550].
 
 The conceptual model is each RTP sender has a small number of objects
 with state that needs to be synchronized to the other side. The current
@@ -64,7 +64,8 @@ The state sent can include a time stamp and rate change estimates that
 allow the receiver to estimate the current state values even at a point
 in the future. An application that receives a state update can apply it
 immediately (often called immediate based), wait a fixed delay and then
-apply state changes (often called delay based), or apply a predicted value based on
+apply state changes (often called delay based), or apply a predicted
+value based on
 overwriting any previous predictions (often called rollback based).
 
 In many cases the state does not have any units but if does, SI units
@@ -83,7 +84,9 @@ The objects are defined as a series of primitives that define common
 types. The objects and updates to state are encoded with Tag Length
 Value (TLV) style encoding so that receivers can skip objects they do
 not understand. The Objects in an single RTP packet MUST be processed in
-order. This allows a sender to write state in an old format followed by a new format, allowing the new format to override values in the old format.
+order. This allows a sender to write state in an old format followed by
+a new
+format, allowing the new format to override values in the old format.
 This allows for easy upgrade of the protocol with backwards compatibility.
 
 # Goals:
