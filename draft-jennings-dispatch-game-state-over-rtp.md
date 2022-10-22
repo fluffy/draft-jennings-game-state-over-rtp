@@ -1,4 +1,4 @@
-%%%
+f%%%
 title = "Game State over Real Time Protocol"
 abbrev = "Game State over RTP"
 ipr= "trust200902"
@@ -321,7 +321,7 @@ parameters change over time.
 ```
 Head1 ::= tagHead1 Length ObjectID Time1
   Loc2 Rot2
-  ( tagHeadIpd Length Float16 /* IPD */ )?
+  ( tagHeadIpd1 Length Float16 /* IPD */ )?
 ```
 
 Defines location and rotation of head with optional interpupillary
@@ -450,6 +450,35 @@ Kbps. [TODO: Check.]
 
 ## Common Controls
 
+### Three Degree of Freedom (3DOF) Controller 
+
+Defines the location and orientation of a 6DOF controller.
+
+```
+SixDOF1 ::= tag3DOF1 Length ObjectID Time1
+  bool isLeft
+  Rot2
+```
+
+For systems with two controls, the isLeft indicates if it is the left
+or right controller. 
+
+### Six Degree of Freedom (6DOF) Controller 
+
+Defines the location and orientation of a 6DOF controller.
+
+```
+SixDOF1 ::= tag6DOF1 Length ObjectID Time1
+  bool isLeft
+  Loc2 Rot2
+  ( tag6DOFpointer1 Loc1 /* interrsection point */ )?
+```
+
+For systems with two controls, the isLeft indicates if it is the left
+or right controller. The intersection point can be used for or systems
+where the controller can indicate the location that a controller is
+pointing at.
+
 ### Game Controller 
 
 Transfers the current values and time the value last changed for a left
@@ -493,7 +522,7 @@ GameControl1 ::= tagGameControl1 Length ObjectID Time1
    Float16 Float16 /* right stick x,y */
  ```
  
- 
+
 # Encoding
 
 Each RTP payload will contain one or more objects. An object cannot
@@ -723,7 +752,7 @@ For each object, an API to get the predicted values at a given time.
 
 ```
 Head1 ::= tagHead1 Length ObjectID Time1 Loc2 Rot2
-  ( tagHeadIpd Length Float16 /* IPD */ )?
+  ( tagHeadIpd1 Length Float16 /* IPD */ )?
 
 Mesh1 ::= tagMesh1 Length ObjectID
  ( TextureUrl1 | TextureRtpPT1 )
@@ -798,9 +827,12 @@ tagObject1 ::= #x03
 tagParent1 ::= #x04
 tagMesh1 ::= #x80 #x00
 tagHand2 ::= #x80 #x01
-tagHeadIpd ::= #x80 #x02
+tagHeadIpd1 ::= #x80 #x02
 tagMesh2 ::= #x80 #x04
 tagObject2 ::= #x80 #x03
+tag3DOF1 ::= #x80 #x05
+tag6DOF1 ::= #x80 #x06
+tag6DOFpointer1 ::= #x80 #x07
 
 ObjectID ::= VarUInt
 
