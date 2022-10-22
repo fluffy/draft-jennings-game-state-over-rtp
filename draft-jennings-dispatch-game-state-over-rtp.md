@@ -1,4 +1,4 @@
-f%%%
+%%%
 title = "Game State over Real Time Protocol"
 abbrev = "Game State over RTP"
 ipr= "trust200902"
@@ -642,13 +642,16 @@ following the guidance provided in [@?RFC4855].
    Required parameters: None.
    Optional parameters: None.
    Encoding considerations: This media is sent as binary data.
-   Security considerations: (IANA point to security section of this RFC)
+   Security considerations: 
+        (IANA point to security section of this RFC)
    Interoperability considerations: None.
-   Published specification: (IANA to replace with RFC number for this specification)
+   Published specification: 
+        (IANA to replace with RFC number for this specification)
    Applications that use this media type: N/A
    Fragment identifier considerations: N/A
    Additional information: None
-   Person & email address to contact for further information: Cullen Jennings <fluffy@iii.ca>
+   Person & email address to contact for further information: 
+        Cullen Jennings <fluffy@iii.ca>
    Intended usage: COMMON
    Restrictions on usage: N/A
    Author: Cullen Jennings <email:fluffy@iii.ca>
