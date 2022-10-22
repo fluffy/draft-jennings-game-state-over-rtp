@@ -448,7 +448,52 @@ Names of the joints are explained in
 This is about 175 bytes, so at a 5Hz update rate this will be around 10
 Kbps. [TODO: Check.]
 
+## Common Controls
 
+### Game Controller 
+
+Transfers the current values and time the value last changed for a left
+and right analog stick with x and y values ranging from -1.0 to 1.0 and
+the state of several buttons along with the time a button state last
+changed. 
+
+
+| Bit   | Button           |
+| --: | :-- | 
+|   1 | Menu  |
+|   2 | View |
+|   3 | A  |
+|   4 | B |
+|   5 | X  |
+|   6 | Y |
+|   7 | DPadUp |
+|   8 | DPadDown  |
+|   9 | DPadLeft  |
+| 10 | DPadRight  |
+| 11 | LeftShoulder |
+| 12 | RightShoulder |
+| 13 | LeftStickButton |
+| 14 | RightStickButton |
+| 15 | LeftTrigger |
+| 16 | RightTrigger |
+| 17 | LeftShoulder |
+| 18 | RightShoulder |
+| 19 | Z |
+| 20 | Pause |
+
+
+Sony style buttons for Square, Triangle ,Cross, Circle map to X,Y,A,B
+and R1,R2,L1,L2 map to RightShoulder, RightTrigger, LeftShoulder,
+LeftTrigger.
+
+```
+GameControl1 ::= tagGameControl1 Length ObjectID Time1
+   VarInt Time1 /* buttons state and last time state changed */
+   Float16 Float16 /* left stick x,y */
+   Float16 Float16 /* right stick x,y */
+ ```
+ 
+ 
 # Encoding
 
 Each RTP payload will contain one or more objects. An object cannot
@@ -613,6 +658,7 @@ Initial assignments are:
 | tagHeadIPD1 | 130 |
 | tagObject2 | 131 |
 | tagMesh2 | 132 |
+| tagGameControl1 | 133 |
 
 # Security {#sec-security}
 
