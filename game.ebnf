@@ -1,3 +1,9 @@
+
+GameControl1 ::= tagGameControl1 Length ObjectID Time1
+   VarInt Time1 /* buttons state and last time state changed */
+   Float16 Float16 /* left stick x,y */
+   Float16 Float16 /* right stick x,y */
+
 Head1 ::= tagHead1 Length ObjectID Time1 Loc2 Rot2 
   ( tagHeadIpd Length Float16 /* IPD */ )?
   
