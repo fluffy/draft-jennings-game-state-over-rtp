@@ -455,7 +455,7 @@ Kbps. [TODO: Check.]
 Defines the location and orientation of a 6DOF controller.
 
 ```
-SixDOF1 ::= tag3DOF1 Length ObjectID Time1
+ThreeDOF1 ::= tag3DOF1 Length ObjectID Time1
   bool isLeft
   Rot2
 ```
@@ -691,6 +691,9 @@ Initial assignments are:
 | tagObject2 | 131 |
 | tagMesh2 | 132 |
 | tagGameControl1 | 133 |
+| tag3DOF1 | 134 |
+| tag6DOF1 | 135 |
+| tag6DOFpointer1 | 136 |
 
 # Security {#sec-security}
 
@@ -706,7 +709,10 @@ Thanks to Paul Jones for comments and writing an implementation.
 
 # Implementations
 
-A C++ open source implementation is available at: TODO.
+A C++ open source implementation is available at:
+```
+https://github.com/cisco/gse 
+```
 
 # Test Vectors
 
@@ -821,6 +827,20 @@ Hand2 ::= tagHand2 Length ObjectID Time1
  Transform1 /* pinkyMCP */
  Transform1 /* pinkyCMC */
 
+ThreeDOF1 ::= tag3DOF1 Length ObjectID Time1
+  bool isLeft
+  Rot2
+  
+SixDOF1 ::= tag6DOF1 Length ObjectID Time1
+  bool isLeft
+  Loc2 Rot2
+  ( tag6DOFpointer1 Loc1 /* interrsection point */ )?
+
+GameControl1 ::= tagGameControl1 Length ObjectID Time1
+   VarInt Time1 /* buttons state and last time state changed */
+   Float16 Float16 /* left stick x,y */
+   Float16 Float16 /* right stick x,y */
+   
 Tag ::= VarUInt
 
 tagInvalid ::= #x00
@@ -831,11 +851,12 @@ tagParent1 ::= #x04
 tagMesh1 ::= #x80 #x00
 tagHand2 ::= #x80 #x01
 tagHeadIpd1 ::= #x80 #x02
-tagMesh2 ::= #x80 #x04
 tagObject2 ::= #x80 #x03
-tag3DOF1 ::= #x80 #x05
-tag6DOF1 ::= #x80 #x06
-tag6DOFpointer1 ::= #x80 #x07
+tagMesh2 ::= #x80 #x04
+tagGameControl1 ::= #x80 #x05
+tag3DOF1 ::= #x80 #x06
+tag6DOF1 ::= #x80 #x07
+tag6DOFpointer1 ::= #x80 #x08
 
 ObjectID ::= VarUInt
 
