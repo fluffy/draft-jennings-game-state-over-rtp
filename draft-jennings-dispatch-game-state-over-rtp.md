@@ -709,7 +709,10 @@ Thanks to Paul Jones for comments and writing an implementation.
 
 # Implementations
 
-A C++ open source implementation is available at: TODO.
+A C++ open source implementation is available at:
+```
+https://github.com/cisco/gse 
+```
 
 # Test Vectors
 
