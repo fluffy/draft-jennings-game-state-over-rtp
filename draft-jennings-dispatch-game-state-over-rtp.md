@@ -9,7 +9,7 @@ keyword = ["realtime","game"]
 [seriesInfo]
 status = "standard"
 name = "Internet-Draft"
-value = "draft-jennings-dispatch-game-state-over-rtp-00"
+value = "draft-jennings-dispatch-game-state-over-rtp-01"
 stream = "IETF"
 
 [[author]]
