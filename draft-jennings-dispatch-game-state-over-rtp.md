@@ -834,7 +834,7 @@ ThreeDOF1 ::= tag3DOF1 Length ObjectID Time1
 SixDOF1 ::= tag6DOF1 Length ObjectID Time1
   bool isLeft
   Loc2 Rot2
-  ( tag6DOFpointer1 Loc1 /* interrsection point */ )?
+  ( tag6DOFpointer1 Loc1 /* intersection point */ )?
 
 GameControl1 ::= tagGameControl1 Length ObjectID Time1
    VarInt Time1 /* buttons state and last time state changed */
